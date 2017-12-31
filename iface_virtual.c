@@ -13,6 +13,8 @@
 
 #include "ssd1306.h"
 
+#ifdef CONFIG_SSD1306_CONFIG_VIRTUAL_DEVICE
+
 #ifndef SSD1306_CONFIG_VIRTUAL_DEVICE
 #error "Virtual interface requires SSD1306_CONFIG_VIRTUAL_DEVICE"
 #endif
@@ -84,3 +86,5 @@ void Virt_DeviceBlit( struct SSD1306_Device* SrcDevice, struct SSD1306_Device* D
         );
     }
 }
+
+#endif

@@ -23,7 +23,7 @@ config SSD1306_CONFIG_DYNAMIC_ALLOC
 config SSD1306_CONFIG_VIRTUAL_DEVICE
     default n
     bool "Enable virtual device"
-    depends on SSD1306_CONFIG_SSD1306_DYNAMIC_ALLOC
+    depends on SSD1306_CONFIG_DYNAMIC_ALLOC
     help
         Select this to enable the creation of virtual devices.
 

@@ -80,10 +80,8 @@ struct SSD1306_Device {
     int Height;
 
 #ifdef CONFIG_SSD1306_CONFIG_DYNAMIC_ALLOC
-#warning Dynamic framebuffer alloc
     uint8_t* Framebuffer;
 #else
-#warning Static framebuffer alloc
     uint8_t Framebuffer[ SSD1306_Max_Framebuffer_Size ];
 #endif
 

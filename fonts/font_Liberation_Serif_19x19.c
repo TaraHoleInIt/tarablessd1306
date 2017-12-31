@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include "font.h"
+#include "ssd1306_font.h"
 
 //WARNING: This Font Require X-GLCD Lib.
 //         You can not use it with MikroE GLCD Lib.

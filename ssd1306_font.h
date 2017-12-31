@@ -1,5 +1,5 @@
-#ifndef _FONT_H_
-#define _FONT_H_
+#ifndef _SSD1306_FONT_H_
+#define _SSD1306_FONT_H_
 
 #include <stdbool.h>
 

@@ -13,7 +13,7 @@
 #include <math.h>
 
 #include "ssd1306.h"
-#include "font.h"
+#include "ssd1306_font.h"
 
 #define COM_Disable_LR_Remap 0
 #define COM_Enable_LR_Remap BIT( 5 )

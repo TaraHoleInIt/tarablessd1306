@@ -10,7 +10,7 @@
 #include <ctype.h>
 
 #include "ssd1306.h"
-#include "font.h"
+#include "ssd1306_font.h"
 
 int FontGetCharHeight( struct FontDef* FontHandle, char c ) {
     NullCheck( FontHandle, return 0 );
