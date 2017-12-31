@@ -12,14 +12,14 @@
 #include "ssd1306.h"
 #include "ssd1306_font.h"
 
-int FontGetCharHeight( struct FontDef* FontHandle, char c ) {
+int SSD1306_FontGetCharHeight( struct FontDef* FontHandle, char c ) {
     NullCheck( FontHandle, return 0 );
     NullCheck( FontHandle->Data, return 0 );
 
     return FontHandle->Height * 8;
 }
 
-int FontMeasureString( struct FontDef* FontHandle, const char* Text ) {
+int SSD1306_FontMeasureString( struct FontDef* FontHandle, const char* Text ) {
     int StringWidthInPixels = 0;
     int Length = 0;
     int i = 0;
@@ -29,13 +29,13 @@ int FontMeasureString( struct FontDef* FontHandle, const char* Text ) {
     NullCheck( Text, return 0 );
 
     for ( i = 0, Length = strlen( Text ); i < Length; i++ ) {
-        StringWidthInPixels+= FontGetCharWidth( FontHandle, Text[ i ] );
+        StringWidthInPixels+= SSD1306_FontGetCharWidth( FontHandle, Text[ i ] );
     }
 
     return StringWidthInPixels;
 }
 
-int FontGetCharWidth( struct FontDef* FontHandle, char c ) {
+int SSD1306_FontGetCharWidth( struct FontDef* FontHandle, char c ) {
     const uint8_t* WidthOffset = FontHandle->Data;
 
     NullCheck( FontHandle, return 0 );
@@ -48,7 +48,7 @@ int FontGetCharWidth( struct FontDef* FontHandle, char c ) {
     return *WidthOffset;
 }
 
-void FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color ) {
+void SSD1306_FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color ) {
     const uint8_t* FontOffset = NULL;
     struct FontDef* Font = NULL;
     int GlyphSizeInBytes = 0;
@@ -62,8 +62,8 @@ void FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bo
     NullCheck( DeviceHandle->Font, return );
     NullCheck( DeviceHandle->Font->Data, return );
 
-    CharWidth = FontGetCharWidth( DeviceHandle->Font, c );
-    CharHeight = FontGetCharHeight( DeviceHandle->Font, c );
+    CharWidth = SSD1306_FontGetCharWidth( DeviceHandle->Font, c );
+    CharHeight = SSD1306_FontGetCharHeight( DeviceHandle->Font, c );
 
     CheckBounds( x >= ( DeviceHandle->Width ) - CharWidth, return );
     CheckBounds( y >= ( DeviceHandle->Height ) - CharHeight, return );
@@ -81,7 +81,7 @@ void FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bo
     GlyphSizeInBytes = ( Font->Width * Font->Height ) + 1;
     FontOffset = &Font->Data[ ( ( c - Font->StartChar ) * GlyphSizeInBytes ) + 1 ];
 
-    for ( x2 = 0; x2 < FontGetCharWidth( Font, c ); x2++ ) {
+    for ( x2 = 0; x2 < SSD1306_FontGetCharWidth( Font, c ); x2++ ) {
         for ( y2 = 0; y2 < Font->Height; y2++ ) {
             DeviceHandle->Framebuffer[ ( ( y2 + y ) * DeviceHandle->Width ) + ( x + x2 ) ] = ( Color == true ) ? *FontOffset : ! *FontOffset;
             FontOffset++;
@@ -89,7 +89,7 @@ void FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bo
     }
 }
 
-void FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color ) {
+void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color ) {
     int Length = 0;
     int i = 0;
     int x2 = 0;
@@ -105,12 +105,12 @@ void FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Text, int 
     CheckBounds( y >= DeviceHandle->Height, return );
 
     for ( i = 0, x2 = x, y2 = y, Length = strlen( Text ); i < Length; i++ ) {
-        FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
-        x2+= FontGetCharWidth( DeviceHandle->Font, Text[ i ] );
+        SSD1306_FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
+        x2+= SSD1306_FontGetCharWidth( DeviceHandle->Font, Text[ i ] );
     }
 }
 
-void FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color ) {
+void SSD1306_FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color ) {
     const uint8_t* FontOffset = NULL;
     struct FontDef* Font = NULL;
     int CharSizeInBytes = 0;
@@ -126,8 +126,8 @@ void FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, 
     NullCheck( DeviceHandle->Font->Data, return );
 
     Font = DeviceHandle->Font;
-    CharWidth = FontGetCharWidth( Font, c );
-    CharHeight = FontGetCharHeight( Font, c );
+    CharWidth = SSD1306_FontGetCharWidth( Font, c );
+    CharHeight = SSD1306_FontGetCharHeight( Font, c );
     
     CheckBounds( x >= ( DeviceHandle->Width ) - CharWidth, return );
     CheckBounds( y >= ( DeviceHandle->Height ) - CharHeight, return );
@@ -157,7 +157,7 @@ void FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, 
     }
 }
 
-void FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color ) {
+void SSD1306_FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color ) {
     int Length = 0;
     int i = 0;
 
@@ -171,12 +171,12 @@ void FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const char* T
     CheckBounds( y >= DeviceHandle->Height, return );
 
     for ( i = 0, Length = strlen( Text ); i < Length; i++ ) {
-        FontDrawCharUnaligned( DeviceHandle, Text[ i ], x, y, Color );
-        x+= FontGetCharWidth( DeviceHandle->Font, Text[ i ] );
+        SSD1306_FontDrawCharUnaligned( DeviceHandle, Text[ i ], x, y, Color );
+        x+= SSD1306_FontGetCharWidth( DeviceHandle->Font, Text[ i ] );
     }
 }
 
-void FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Text, TextAnchor Anchor , bool Color ) {
+void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Text, TextAnchor Anchor , bool Color ) {
     int StringLengthInPixels = 0;
     int CharHeight = 0;
     int MidpointX = 0;
@@ -190,8 +190,8 @@ void FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Te
     NullCheck( DeviceHandle->Font->Data, return );
     NullCheck( Text, return );    
 
-    StringLengthInPixels = FontMeasureString( DeviceHandle->Font, Text );
-    CharHeight = FontGetCharHeight( DeviceHandle->Font, ' ' );
+    StringLengthInPixels = SSD1306_FontMeasureString( DeviceHandle->Font, Text );
+    CharHeight = SSD1306_FontGetCharHeight( DeviceHandle->Font, ' ' );
     MidpointX = ( DeviceHandle->Width / 2 ) - 1;
     MidpointY = ( DeviceHandle->Height / 2 ) - 1;
 
@@ -246,5 +246,5 @@ void FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Te
         }
     };
     
-    FontDrawStringUnaligned( DeviceHandle, Text, x, y, Color );
+    SSD1306_FontDrawStringUnaligned( DeviceHandle, Text, x, y, Color );
 }

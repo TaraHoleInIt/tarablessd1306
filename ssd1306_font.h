@@ -30,15 +30,15 @@ extern struct FontDef Font_Comic_Neue_25x28;
 
 struct SSD1306_Device;
 
-int FontGetCharHeight( struct FontDef* FontHandle, char c );
-int FontMeasureString( struct FontDef* FontHandle, const char* Text );
-int FontGetCharWidth( struct FontDef* FontHandle, char c );
+int SSD1306_FontGetCharHeight( struct FontDef* FontHandle, char c );
+int SSD1306_FontMeasureString( struct FontDef* FontHandle, const char* Text );
+int SSD1306_FontGetCharWidth( struct FontDef* FontHandle, char c );
 
-void FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color );
-void FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color );
+void SSD1306_FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color );
+void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color );
 
-void FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color );
-void FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color );
-void FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Text, TextAnchor Anchor , bool Color );
+void SSD1306_FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c, int x, int y, bool Color );
+void SSD1306_FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const char* Text, int x, int y, bool Color );
+void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const char* Text, TextAnchor Anchor , bool Color );
 
 #endif
