@@ -67,6 +67,8 @@ void SSD1306_FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, i
 
     CheckBounds( x > ( DeviceHandle->Width ) - CharWidth, return );
     CheckBounds( y > ( DeviceHandle->Height ) - CharHeight, return );
+    CheckBounds( x < 0, return );
+    CheckBounds( y < 0, return );
 
     if ( c < DeviceHandle->Font->StartChar || c > DeviceHandle->Font->EndChar ) {
         return;
@@ -81,7 +83,7 @@ void SSD1306_FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, i
     GlyphSizeInBytes = ( Font->Width * Font->Height ) + 1;
     FontOffset = &Font->Data[ ( ( c - Font->StartChar ) * GlyphSizeInBytes ) + 1 ];
 
-    for ( x2 = 0; x2 < SSD1306_FontGetCharWidth( Font, c ); x2++ ) {
+    for ( x2 = 0; x2 < SSD1306_FontGetCharWidth( Font, c ) && x2 < DeviceHandle->Width; x2++ ) {
         for ( y2 = 0; y2 < Font->Height; y2++ ) {
             DeviceHandle->Framebuffer[ ( ( y2 + y ) * DeviceHandle->Width ) + ( x + x2 ) ] = ( Color == true ) ? *FontOffset : ! *FontOffset;
             FontOffset++;
@@ -103,6 +105,8 @@ void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Te
 
     CheckBounds( x > DeviceHandle->Width, return );
     CheckBounds( y > DeviceHandle->Height, return );
+    CheckBounds( x < 0, return );
+    CheckBounds( y < 0, return );
 
     for ( i = 0, x2 = x, y2 = y, Length = strlen( Text ); i < Length; i++ ) {
         SSD1306_FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
@@ -131,6 +135,8 @@ void SSD1306_FontDrawCharUnaligned( struct SSD1306_Device* DeviceHandle, char c,
     
     CheckBounds( x >= ( DeviceHandle->Width ) - CharWidth, return );
     CheckBounds( y >= ( DeviceHandle->Height ) - CharHeight, return );
+    CheckBounds( x < 0, return );
+    CheckBounds( y < 0, return );
 
     if ( c < Font->StartChar || c > Font->EndChar ) {
         return;
@@ -169,6 +175,8 @@ void SSD1306_FontDrawStringUnaligned( struct SSD1306_Device* DeviceHandle, const
 
     CheckBounds( x >= DeviceHandle->Width, return );
     CheckBounds( y >= DeviceHandle->Height, return );
+    CheckBounds( x < 0, return );
+    CheckBounds( y < 0, return );
 
     for ( i = 0, Length = strlen( Text ); i < Length; i++ ) {
         SSD1306_FontDrawCharUnaligned( DeviceHandle, Text[ i ], x, y, Color );
@@ -245,6 +253,11 @@ void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const 
             return;
         }
     };
-    
+
+    CheckBounds( x >= DeviceHandle->Width, return );
+    CheckBounds( y >= DeviceHandle->Height, return );
+    CheckBounds( x < 0, return );
+    CheckBounds( y < 0, return );
+
     SSD1306_FontDrawString( DeviceHandle, Text, x, y, Color );
 }
