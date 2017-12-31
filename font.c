@@ -101,8 +101,8 @@ void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Te
     NullCheck( DeviceHandle->Font->Data, return );
     NullCheck( Text, return );
 
-    CheckBounds( x >= DeviceHandle->Width, return );
-    CheckBounds( y >= DeviceHandle->Height, return );
+    CheckBounds( x > DeviceHandle->Width, return );
+    CheckBounds( y > DeviceHandle->Height, return );
 
     for ( i = 0, x2 = x, y2 = y, Length = strlen( Text ); i < Length; i++ ) {
         SSD1306_FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
@@ -192,8 +192,8 @@ void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const 
 
     StringLengthInPixels = SSD1306_FontMeasureString( DeviceHandle->Font, Text );
     CharHeight = SSD1306_FontGetCharHeight( DeviceHandle->Font, ' ' );
-    MidpointX = ( DeviceHandle->Width / 2 ) - 1;
-    MidpointY = ( DeviceHandle->Height / 2 ) - 1;
+    MidpointX = ( DeviceHandle->Width / 2 );
+    MidpointY = ( DeviceHandle->Height / 2 );
 
     switch ( Anchor ) {
         case TextAnchor_North: {
@@ -222,18 +222,18 @@ void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const 
             break;
         }
         case TextAnchor_SouthEast: {
-            y = DeviceHandle->Height - 1 - CharHeight;
+            y = DeviceHandle->Height - CharHeight;
             x = DeviceHandle->Width - 1 - StringLengthInPixels;
             break;
         }
         case TextAnchor_SouthWest: {
-            y = DeviceHandle->Height - 1 - CharHeight;
+            y = DeviceHandle->Height - CharHeight;
             x = 0;
             break;
         }
         case TextAnchor_South: {
             x = MidpointX - ( StringLengthInPixels / 2 );
-            y = DeviceHandle->Height - 1 - CharHeight;
+            y = DeviceHandle->Height - CharHeight;
             break;
         }
         case TextAnchor_Center: {
@@ -246,5 +246,5 @@ void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* DeviceHandle, const 
         }
     };
     
-    SSD1306_FontDrawStringUnaligned( DeviceHandle, Text, x, y, Color );
+    SSD1306_FontDrawString( DeviceHandle, Text, x, y, Color );
 }
