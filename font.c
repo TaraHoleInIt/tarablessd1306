@@ -65,8 +65,8 @@ void SSD1306_FontDrawChar( struct SSD1306_Device* DeviceHandle, char c, int x, i
     CharWidth = SSD1306_FontGetCharWidth( DeviceHandle->Font, c );
     CharHeight = SSD1306_FontGetCharHeight( DeviceHandle->Font, c );
 
-    CheckBounds( x >= ( DeviceHandle->Width ) - CharWidth, return );
-    CheckBounds( y >= ( DeviceHandle->Height ) - CharHeight, return );
+    CheckBounds( x > ( DeviceHandle->Width ) - CharWidth, return );
+    CheckBounds( y > ( DeviceHandle->Height ) - CharHeight, return );
 
     if ( c < DeviceHandle->Font->StartChar || c > DeviceHandle->Font->EndChar ) {
         return;
@@ -103,6 +103,8 @@ void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Te
 
     CheckBounds( x >= DeviceHandle->Width, return );
     CheckBounds( y >= DeviceHandle->Height, return );
+
+    printf( "%s: %d,%d\n", __FUNCTION__, x, y );
 
     for ( i = 0, x2 = x, y2 = y, Length = strlen( Text ); i < Length; i++ ) {
         SSD1306_FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
