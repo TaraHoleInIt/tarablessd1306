@@ -104,8 +104,6 @@ void SSD1306_FontDrawString( struct SSD1306_Device* DeviceHandle, const char* Te
     CheckBounds( x >= DeviceHandle->Width, return );
     CheckBounds( y >= DeviceHandle->Height, return );
 
-    printf( "%s: %d,%d\n", __FUNCTION__, x, y );
-
     for ( i = 0, x2 = x, y2 = y, Length = strlen( Text ); i < Length; i++ ) {
         SSD1306_FontDrawChar( DeviceHandle, Text[ i ], x2, y2, Color );
         x2+= SSD1306_FontGetCharWidth( DeviceHandle->Font, Text[ i ] );
