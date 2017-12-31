@@ -6,10 +6,7 @@
  */
 
 #include <stdint.h>
-#include "config.h"
 #include "font.h"
-
-#ifdef CONFIG_FONT_LIBERATION_SERIF_19x19
 
 //WARNING: This Font Require X-GLCD Lib.
 //         You can not use it with MikroE GLCD Lib.
@@ -127,5 +124,3 @@ struct FontDef Font_Liberation_Serif_19x19 = {
     ' ',
     '\x7F'
 };
-
-#endif

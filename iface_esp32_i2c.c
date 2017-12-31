@@ -12,7 +12,7 @@
 #include <driver/i2c.h>
 
 #include "ssd1306.h"
-#include "iface_esp32_i2c.h"
+#include "ssd1306_iface_i2c.h"
 
 int ESP32_WriteCommand_I2C( struct SSD1306_Device* DeviceHandle, SSDCmd SSDCommand ) {
     i2c_cmd_handle_t CommandHandle = NULL;

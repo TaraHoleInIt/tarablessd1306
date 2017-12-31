@@ -1,0 +1,30 @@
+menu "TarableSSD1306"
+
+config SSD1306_CONFIG_FONT_COMIC_NEUE_25x28
+    default y
+    bool "Compile in Comic Neue 25x28 font"
+
+config SSD1306_CONFIG_FONT_LIBERATION_SANS_15x16
+    default y
+    bool "Compile in Liberation Sans 15x16 font"
+
+config SSD1306_CONFIG_FONT_LIBERATION_SERIF_19x19
+    default y
+    bool "Compile in Liberation Serif 19x19 font"
+
+config SSD1306_CONFIG_FONT_UBUNTU_MONO_6x10
+    default y
+    bool "Compile in Ubuntu Mono 6x10 font"
+
+config SSD1306_CONFIG_DYNAMIC_ALLOC
+    default n
+    bool "Dynamically allocate shadow framebuffer"
+
+config SSD1306_CONFIG_VIRTUAL_DEVICE
+    default n
+    bool "Enable virtual device"
+    depends on SSD1306_CONFIG_SSD1306_DYNAMIC_ALLOC
+    help
+        Select this to enable the creation of virtual devices.
+
+endmenu

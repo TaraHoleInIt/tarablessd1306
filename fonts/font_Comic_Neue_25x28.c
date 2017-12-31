@@ -6,10 +6,7 @@
  */
 
 #include <stdint.h>
-#include "config.h"
 #include "font.h"
-
-#ifdef CONFIG_FONT_COMIC_NEUE_25x28
 
 //WARNING: This Font Require X-GLCD Lib.
 //         You can not use it with MikroE GLCD Lib.
@@ -127,5 +124,3 @@ struct FontDef Font_Comic_Neue_25x28 = {
     ' ',
     '\x7F'
 };
-
-#endif

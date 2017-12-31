@@ -1,5 +1,5 @@
-#ifndef _IFACE_ESP32_I2C_H_
-#define _IFACE_ESP32_I2C_H_
+#ifndef _SSD1306_IFACE_I2C_H_
+#define _SSD1306_IFACE_I2C_H_
 
 #define USE_THIS_I2C_PORT I2C_NUM_1
 

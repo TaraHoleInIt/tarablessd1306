@@ -1,5 +1,5 @@
-#ifndef _IFACE_ESP32_SPI_H_
-#define _IFACE_ESP32_SPI_H_
+#ifndef _SSD1306_IFACE_SPI_H_
+#define _SSD1306_IFACE_SPI_H_
 
 int ESP32_WriteCommand_SPI( struct SSD1306_Device* DeviceHandle, SSDCmd SSDCommand );
 int ESP32_WriteData_SPI( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );

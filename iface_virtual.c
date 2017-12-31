@@ -13,8 +13,8 @@
 
 #include "ssd1306.h"
 
-#ifndef CONFIG_SSD1306_DYNAMIC_ALLOC
-#error "Virtual interface requires CONFIG_SSD1306_DYNAMIC_ALLOC"
+#ifndef SSD1306_CONFIG_VIRTUAL_DEVICE
+#error "Virtual interface requires SSD1306_CONFIG_VIRTUAL_DEVICE"
 #endif
 
 static int Virt_WriteCommandStub( struct SSD1306_Device* DeviceHandle, SSDCmd Command ) {

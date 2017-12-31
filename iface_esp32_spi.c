@@ -17,7 +17,7 @@
 #include <driver/spi_master.h>
 
 #include "ssd1306.h"
-#include "iface_esp32_spi.h"
+#include "ssd1306_iface_spi.h"
 
 #define TraceHere( ) printf( "%s: line %d\n", __FUNCTION__, __LINE__ )
 #define MHZ( n ) ( n * 1000000 )
