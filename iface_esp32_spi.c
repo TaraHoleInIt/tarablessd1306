@@ -98,7 +98,7 @@ int ESP32_Reset_SPI( struct SSD1306_Device* DeviceHandle ) {
 int ESP32_InitSPIMaster( void ) {
     spi_bus_config_t BusConfig;
 
-    if ( GPIO_IS_VALID_OUTPUT_GPIO( DC ) ) {
+    if ( GPIO_IS_VALID_OUTPUT_GPIO( DCPin ) ) {
         gpio_set_direction( DCPin, GPIO_MODE_OUTPUT );
         gpio_set_level( DCPin, 0 );
 
