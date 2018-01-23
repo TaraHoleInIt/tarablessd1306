@@ -22,9 +22,19 @@
 #define TraceHere( ) printf( "%s: line %d\n", __FUNCTION__, __LINE__ )
 #define MHZ( n ) ( n * 1000000 )
 
-static const int MOSIPin = 23;
-static const int SCKPin = 18;
-static int DCPin = -1;
+static spi_host_device_t SPIHostDevice = VSPI_HOST;
+static int SPIClockSpeed = MHZ( 1 );
+static int MOSIPin = 23;
+static int SCKPin = 18;
+static int DCPin = 4;
+
+void ESP32_SetConfig_SPI( spi_host_device_t SPIHost, int MOSI, int MISO, int SCK, int DC, int ClockSpeedHz ) {
+    SPIClockSpeed = ClockSpeedHz;
+    SPIHostDevice = SPIHost;
+    MOSIPin = MOSI;
+    SCKPin = SCK;
+    DCPin = DC;
+}
 
 int ESP32_WriteCommand_SPI( struct SSD1306_Device* DeviceHandle, SSDCmd SSDCommand ) {
     static uint8_t TempCommandByte = 0;
@@ -79,20 +89,16 @@ int ESP32_Reset_SPI( struct SSD1306_Device* DeviceHandle ) {
             vTaskDelay( pdMS_TO_TICKS( 100 ) );
         gpio_set_level( DeviceHandle->RSTPin, 1 );
 
-        printf( "Done resetted\n" );
-
         return 1;
     }
 
     return 0;
 }
 
-int ESP32_InitSPIMaster( int DC ) {
+int ESP32_InitSPIMaster( void ) {
     spi_bus_config_t BusConfig;
 
     if ( GPIO_IS_VALID_OUTPUT_GPIO( DC ) ) {
-        DCPin = DC;
-
         gpio_set_direction( DCPin, GPIO_MODE_OUTPUT );
         gpio_set_level( DCPin, 0 );
 
@@ -104,7 +110,7 @@ int ESP32_InitSPIMaster( int DC ) {
         BusConfig.quadwp_io_num = -1;
         BusConfig.miso_io_num = -1;
 
-        return spi_bus_initialize( HSPI_HOST, &BusConfig, 1 ) == ESP_OK ? 1 : 0;
+        return spi_bus_initialize( SPIHostDevice, &BusConfig, 1 ) == ESP_OK ? 1 : 0;
     }
 
     printf( "%s: DC Pin %d is not a valid output pin.\n", __FUNCTION__, DC );
@@ -129,7 +135,7 @@ int ESP32_AddDevice_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Hei
 
     memset( &SPIDevice, 0, sizeof( spi_device_interface_config_t ) );
 
-    SPIDevice.clock_speed_hz = MHZ( 1 );
+    SPIDevice.clock_speed_hz = SPIClockSpeed;
     SPIDevice.mode = 0;
     SPIDevice.spics_io_num = CSPin;
     SPIDevice.queue_size = 100;
@@ -140,8 +146,7 @@ int ESP32_AddDevice_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Hei
         gpio_set_level( RSTPin, 0 );   /* Reset happens later and this will remain high */
     }
 
-    if ( spi_bus_add_device( HSPI_HOST, &SPIDevice, &SPIHandle ) == ESP_OK ) {
-        printf( "Here: Device handle = 0x%08X\n", ( uint32_t ) SPIHandle );
+    if ( spi_bus_add_device( SPIHostDevice, &SPIDevice, &SPIHandle ) == ESP_OK ) {
         return SSD1306_Init_SPI( DeviceHandle, Width, Height, RSTPin, CSPin, ( uint32_t ) SPIHandle, ESP32_WriteCommand_SPI, ESP32_WriteData_SPI, ESP32_Reset_SPI );
     }
 
