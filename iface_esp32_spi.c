@@ -113,7 +113,7 @@ int ESP32_InitSPIMaster( void ) {
         return spi_bus_initialize( SPIHostDevice, &BusConfig, 1 ) == ESP_OK ? 1 : 0;
     }
 
-    printf( "%s: DC Pin %d is not a valid output pin.\n", __FUNCTION__, DC );
+    printf( "%s: DC Pin %d is not a valid output pin.\n", __FUNCTION__, DCPin );
     return 0;
 }
 
