@@ -21,5 +21,3 @@
 
 ###### Notes:
 - 128x32 And other displays other than 128x64 are only partially tested. Let me know what works.
-- If you plan on hooking up more than 3 SPI displays you'll need to change NO_CS in spi_master.c in components/driver/ in your esp-idf SDK
-- Control pins for CS and DC in SPI mode can be iffy, it took a bit of fiddling to find pins it was happy with
