@@ -12,11 +12,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <esp_attr.h>
+#include <esp_log.h>
 
 #include "ssd1306.h"
 #include "ssd1306_draw.h"
 
-void IRAM_ATTR SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color ) {
+inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color ) {
     uint32_t YBit = ( Y & 0x07 );
     uint8_t* FBOffset = NULL;
 
@@ -32,14 +33,43 @@ void IRAM_ATTR SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int X, in
     *FBOffset = ( Color == SSD_COLOR_WHITE ) ? *FBOffset | BIT( YBit ) : *FBOffset & ~BIT( YBit );
 }
 
-void IRAM_ATTR SSD1306_DrawHLine( struct SSD1306_Device* DeviceHandle, int x, int y, int x2, int Color ) {
+void IRAM_ATTR SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int x, int y, int Color ) {
     NullCheck( DeviceHandle, return );
-    NullCheck( DeviceHandle->Framebuffer, return );
+
+    ClipBounds( x, 0, DeviceHandle->Width - 1, return );
+    ClipBounds( y, 0, DeviceHandle->Height - 1, return );
+
+    SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
 }
 
-void IRAM_ATTR SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, int y, int y2, int Color ) {
+void IRAM_ATTR SSD1306_DrawHLine( struct SSD1306_Device* DeviceHandle, int x, int y, int Width, int Color ) {
+    int XEnd = x + Width;
+
     NullCheck( DeviceHandle, return );
     NullCheck( DeviceHandle->Framebuffer, return );
+
+    ClipBounds( x, 0, DeviceHandle->Width - 1, return );
+    ClipBounds( y, 0, DeviceHandle->Height - 1, return );
+    ClipBounds( XEnd, x, DeviceHandle->Width - 1, return );
+
+    for ( ; x <= XEnd; x++ ) {
+        SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
+    }
+}
+
+void IRAM_ATTR SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, int y, int Height, int Color ) {
+    int YEnd = y + Height;
+
+    NullCheck( DeviceHandle, return );
+    NullCheck( DeviceHandle->Framebuffer, return );
+
+    ClipBounds( x, 0, DeviceHandle->Width - 1, return );
+    ClipBounds( y, 0, DeviceHandle->Height - 1, return );
+    ClipBounds( YEnd, y, DeviceHandle->Height - 1, return );
+
+    for ( ; y <= YEnd; y++ ) {
+        SSD1306_DrawPixel( DeviceHandle, x, y, Color );
+    }
 }
 
 void IRAM_ATTR SSD1306_DrawLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, int Color ) {
