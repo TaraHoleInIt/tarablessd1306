@@ -5,19 +5,39 @@
 extern "C" {
 #endif
 
+#include <esp_panic.h>
+#include <esp_log.h>
+#include "sdkconfig.h"
+
+#define SSD1306_CLIPDEBUG_NONE 0
+#define SSD1306_CLIPDEBUG_WARNING 1
+#define SSD1306_CLIPDEBUG_ERROR 2
+
+#if CONFIG_SSD1306_CLIPDEBUG == SSD1306_CLIPDEBUG_NONE
+    /*
+     * Clip silently with no console output.
+     */
+    #define ClipDebug( x, y )
+#elif CONFIG_SSD1306_CLIPDEBUG == SSD1306_CLIPDEBUG_WARNING
+    /*
+     * Log clipping to the console as a warning.
+     */
+    #define ClipDebug( x, y ) { \
+        ESP_LOGW( __FUNCTION__, "Line %d: Pixel at %d, %d CLIPPED", __LINE__, x, y ); \
+    }
+#elif CONFIG_SSD1306_CLIPDEBUG == SSD1306_CLIPDEBUG_ERROR
+    /*
+     * Log clipping as an error to the console.
+     * Also invokes an abort with stack trace.
+     */
+    #define ClipDebug( x, y ) { \
+        ESP_LOGE( __FUNCTION__, "Line %d: Pixel at %d, %d CLIPPED, ABORT", __LINE__, x, y ); \
+        abort( ); \
+    }
+#endif
+
 #define SSD_COLOR_WHITE 1
 #define SSD_COLOR_BLACK 0
-
-#define ClipBounds( x, min, max, retexpr ) { \
-    if ( x < min ) { \
-        ESP_LOGE( __FUNCTION__, "ClipBounds Line %d: %s (%d) < %s (%d)", __LINE__, #x, x, #min, min ); \
-        retexpr; \
-    } \
-    else if ( x > max ) { \
-        ESP_LOGE( __FUNCTION__, "ClipBounds Line %d: %s (%d) > %s (%d)", __LINE__, #x, x, #max, max ); \
-        retexpr; \
-    } \
-}
 
 void SSD1306_Clear( struct SSD1306_Device* DeviceHandle, int Color );
 void SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color );
