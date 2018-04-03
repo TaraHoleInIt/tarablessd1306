@@ -9,11 +9,10 @@
 
 #include "sdkconfig.h"
 
-#define SSD1306_Max_Framebuffer_Size ( ( 128 * 64 ) / 8 )
 #define SSD1306_Max_Col 127
 #define SSD1306_Max_Row 7
 
-#ifndef BIT
+#if ! defined BIT
 #define BIT( n ) ( 1 << n )
 #endif
 
@@ -63,7 +62,6 @@ typedef enum {
 } SSD1306_AddressMode;
 
 struct SSD1306_Device;
-struct FontDef;
 
 typedef int ( *WriteCommandProc ) ( struct SSD1306_Device* DeviceHandle, SSDCmd Command );
 typedef int ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
@@ -81,15 +79,8 @@ struct SSD1306_Device {
     int Width;
     int Height;
 
-#if CONFIG_SSD1306_CONFIG_DYNAMIC_ALLOC
     uint8_t* Framebuffer;
-#else
-    uint8_t Framebuffer[ SSD1306_Max_Framebuffer_Size ];
-#endif
-
     int FramebufferSize;
-
-    struct FontDef* Font;
 
     WriteCommandProc WriteCommand;
     WriteDataProc WriteData;
@@ -98,24 +89,6 @@ struct SSD1306_Device {
     /* Can be anything, a good use might be a device handle for I2C or SPI */
     uint32_t User0;
 };
-
-struct Rect {
-    int Left;
-    int Right;
-    int Top;
-    int Bottom;
-};
-
-static inline struct Rect MakeRect( int Left, int Right, int Top, int Bottom ) {
-    struct Rect Temp;
-
-    Temp.Left = Left;
-    Temp.Right = Right;
-    Temp.Top = Top;
-    Temp.Bottom = Bottom;
-
-    return Temp;
-}
 
 void SSD1306_SetMuxRatio( struct SSD1306_Device* DeviceHandle, uint8_t Ratio );
 void SSD1306_SetDisplayOffset( struct SSD1306_Device* DeviceHandle, uint8_t Offset );
@@ -133,14 +106,6 @@ void SSD1306_SetDisplayAddressMode( struct SSD1306_Device* DeviceHandle, SSD1306
 void SSD1306_Update( struct SSD1306_Device* DeviceHandle );
 void SSD1306_SetDisplayClocks( struct SSD1306_Device* DeviceHandle, uint32_t DisplayClockDivider, uint32_t OSCFrequency );
 void SSD1306_WriteRawData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
-
-void SSD1306_Clear( struct SSD1306_Device* DeviceHandle, bool Color );
-void SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, uint32_t X, uint32_t Y, bool Color );
-void SSD1306_DrawHLine( struct SSD1306_Device* DeviceHandle, int x, int y, int x2, bool Color );
-void SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, int y, int y2, bool Color );
-void SSD1306_DrawLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, bool Color );
-void SSD1306_DrawRect( struct SSD1306_Device* DeviceHandle, int x, int y, int x2, int y2, bool Color );
-void SSD1306_SetFont( struct SSD1306_Device* DeviceHandle, struct FontDef* FontHandle );
 
 void SSD1306_SetColumnAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );
 void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );

@@ -11,9 +11,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
+#include <esp_heap_caps.h>
 
 #include "ssd1306.h"
-#include "ssd1306_font.h"
 
 #define COM_Disable_LR_Remap 0
 #define COM_Enable_LR_Remap BIT( 5 )
@@ -160,14 +160,6 @@ void SSD1306_SetVFlip( struct SSD1306_Device* DeviceHandle, bool On ) {
     SSD1306_WriteCommand( DeviceHandle, ( On == true ) ? SSDCmd_Set_Display_VFlip_On : SSDCmd_Set_Display_VFlip_Off );
 }
 
-void SSD1306_SetFont( struct SSD1306_Device* DeviceHandle, struct FontDef* FontHandle ) {
-    NullCheck( DeviceHandle, return );
-    NullCheck( FontHandle, return );
-    NullCheck( FontHandle->Data, return );
-
-    DeviceHandle->Font = FontHandle;
-}
-
 void SSD1306_SetColumnAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End ) {
     NullCheck( DeviceHandle, return );
 
@@ -208,12 +200,9 @@ static int SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Hei
     DeviceHandle->Height = Height;
     DeviceHandle->FramebufferSize = ( DeviceHandle->Width * Height ) / 8;
 
-#ifdef CONFIG_SSD1306_CONFIG_DYNAMIC_ALLOC
-    DeviceHandle->Framebuffer = ( uint8_t* ) malloc( DeviceHandle->FramebufferSize );
-    NullCheck( DeviceHandle->Framebuffer, return 0 );
-#endif
+    DeviceHandle->Framebuffer = heap_caps_calloc( 1, DeviceHandle->FramebufferSize, MALLOC_CAP_DMA | MALLOC_CAP_8BIT );
 
-    memset( DeviceHandle->Framebuffer, 0, DeviceHandle->FramebufferSize );
+    NullCheck( DeviceHandle->Framebuffer, return 0 );
 
     /* For those who have a hardware reset pin on their display */
     SSD1306_HWReset( DeviceHandle );
