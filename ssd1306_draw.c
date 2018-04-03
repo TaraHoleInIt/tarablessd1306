@@ -17,7 +17,7 @@
 #include "ssd1306.h"
 #include "ssd1306_draw.h"
 
-inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color ) {
+static inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color ) {
     uint32_t YBit = ( Y & 0x07 );
     uint8_t* FBOffset = NULL;
 
@@ -50,9 +50,9 @@ void IRAM_ATTR SSD1306_DrawHLine( struct SSD1306_Device* DeviceHandle, int x, in
 
     ClipBounds( x, 0, DeviceHandle->Width - 1, return );
     ClipBounds( y, 0, DeviceHandle->Height - 1, return );
-    ClipBounds( XEnd, x, DeviceHandle->Width - 1, return );
 
     for ( ; x <= XEnd; x++ ) {
+        ClipBounds( x, 0, DeviceHandle->Width - 1, break );
         SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
     }
 }
@@ -65,9 +65,9 @@ void IRAM_ATTR SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, in
 
     ClipBounds( x, 0, DeviceHandle->Width - 1, return );
     ClipBounds( y, 0, DeviceHandle->Height - 1, return );
-    ClipBounds( YEnd, y, DeviceHandle->Height - 1, return );
 
     for ( ; y <= YEnd; y++ ) {
+        ClipBounds( y, 0, DeviceHandle->Height - 1, break );
         SSD1306_DrawPixel( DeviceHandle, x, y, Color );
     }
 }
@@ -77,9 +77,37 @@ void IRAM_ATTR SSD1306_DrawLine( struct SSD1306_Device* DeviceHandle, int x0, in
     NullCheck( DeviceHandle->Framebuffer, return );
 }
 
-void IRAM_ATTR SSD1306_DrawRect( struct SSD1306_Device* DeviceHandle, int x, int y, int x2, int y2, int Color ) {
+void IRAM_ATTR SSD1306_DrawBox( struct SSD1306_Device* DeviceHandle, int x1, int y1, int x2, int y2, int Color, bool Fill ) {
+    int Width = ( x2 - x1 );
+    int Height = ( y2 - y1 );
+
     NullCheck( DeviceHandle, return );
     NullCheck( DeviceHandle->Framebuffer, return );
+
+    ClipBounds( x1, 0, DeviceHandle->Width - 1, return );
+    ClipBounds( x2, x1 + 1, DeviceHandle->Width - 1, return );
+    
+    ClipBounds( y1, 0, DeviceHandle->Height - 1, return );
+    ClipBounds( y2, y1 + 1, DeviceHandle->Height - 1, return );
+
+    if ( Fill == false ) {
+        /* Top side */
+        SSD1306_DrawHLine( DeviceHandle, x1, y1, Width, Color );
+
+        /* Bottom side */
+        SSD1306_DrawHLine( DeviceHandle, x1, y1 + Height, Width, Color );
+
+        /* Left side */
+        SSD1306_DrawVLine( DeviceHandle, x1, y1, Height, Color );
+
+        /* Right side */
+        SSD1306_DrawVLine( DeviceHandle, x1 + Width, y1, Height, Color );
+    } else {
+        /* Fill the box by drawing horizontal lines */
+        for ( ; y1 <= y2; y1++ ) {
+            SSD1306_DrawHLine( DeviceHandle, x1, y1, Width, Color );
+        }
+    }
 }
 
 void SSD1306_Clear( struct SSD1306_Device* DeviceHandle, int Color ) {
