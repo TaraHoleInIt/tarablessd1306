@@ -34,6 +34,13 @@ __attribute__( ( always_inline ) ) inline static bool IsPixelVisible( struct SSD
     return Result;
 }
 
+__attribute__( ( always_inline ) ) inline static void SwapInt( int* a, int* b ) {
+    int Temp = *b;
+
+    *b = *a;
+    *a = Temp;
+}
+
 static inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color ) {
     uint32_t YBit = ( Y & 0x07 );
     uint8_t* FBOffset = NULL;
@@ -48,6 +55,11 @@ static inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* Devic
 
     FBOffset = DeviceHandle->Framebuffer + ( ( Y * DeviceHandle->Width ) + X );
     *FBOffset = ( Color == SSD_COLOR_WHITE ) ? *FBOffset | BIT( YBit ) : *FBOffset & ~BIT( YBit );
+}
+
+static inline void IRAM_ATTR SSD1306_XorPixelFast( struct SSD1306_Device* DeviceHandle, int x, int y ) {
+    int YBit = ( y & 0x07 );
+    DeviceHandle->Framebuffer[ x + ( ( y >> 3 ) * DeviceHandle->Width ) ] ^= BIT( YBit );
 }
 
 void IRAM_ATTR SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int x, int y, int Color ) {
@@ -84,9 +96,91 @@ void IRAM_ATTR SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, in
     }
 }
 
+static inline void IRAM_ATTR DrawWideLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, int Color ) {
+    int dx = ( x1 - x0 );
+    int dy = ( y1 - y0 );
+    int Error = 0;
+    int Incr = 1;
+    int x = x0;
+    int y = y0;
+
+    if ( dy < 0 ) {
+        Incr = -1;
+        dy = -dy;
+    }
+
+    Error = ( dy * 2 ) - dx;
+
+    for ( ; x <= x1; x++ ) {
+        if ( IsPixelVisible( DeviceHandle, x, y ) == true ) {
+            SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
+        }
+
+        if ( Error > 0 ) {
+            Error-= ( dx * 2 );
+            y+= Incr;
+        }
+
+        Error+= ( dy * 2 );
+    }
+}
+
+static inline void IRAM_ATTR DrawTallLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, int Color ) {
+    int dx = ( x1 - x0 );
+    int dy = ( y1 - y0 );
+    int Error = 0;
+    int Incr = 1;
+    int x = x0;
+    int y = y0;
+
+    if ( dx < 0 ) {
+        Incr = -1;
+        dx = -dx;
+    }
+
+    Error = ( dx * 2 ) - dy;
+
+    for ( ; y < y1; y++ ) {
+        if ( IsPixelVisible( DeviceHandle, x, y ) == true ) {
+            SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
+        }
+
+        if ( Error > 0 ) {
+            Error-= ( dy * 2 );
+            x+= Incr;
+        }
+
+        Error+= ( dx * 2 );
+    }
+}
+
 void IRAM_ATTR SSD1306_DrawLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, int Color ) {
     NullCheck( DeviceHandle, return );
     NullCheck( DeviceHandle->Framebuffer, return );
+
+    if ( x0 == x1 ) {
+        SSD1306_DrawVLine( DeviceHandle, x0, y0, ( y1 - y0 ), Color );
+    } else if ( y0 == y1 ) {
+        SSD1306_DrawHLine( DeviceHandle, x0, y0, ( x1 - x0 ), Color );
+    } else {
+        if ( abs( x1 - x0 ) > abs( y1 - y0 ) ) {
+            /* Wide ( run > rise ) */
+            if ( x0 > x1 ) {
+                SwapInt( &x0, &x1 );
+                SwapInt( &y0, &y1 );
+            }
+
+            DrawWideLine( DeviceHandle, x0, y0, x1, y1, Color );
+        } else {
+            /* Tall ( rise > run ) */
+            if ( y0 > y1 ) {
+                SwapInt( &y0, &y1 );
+                SwapInt( &x0, &x1 );
+            }
+
+            DrawTallLine( DeviceHandle, x0, y0, x1, y1, Color );
+        }
+    }
 }
 
 void IRAM_ATTR SSD1306_DrawBox( struct SSD1306_Device* DeviceHandle, int x1, int y1, int x2, int y2, int Color, bool Fill ) {
