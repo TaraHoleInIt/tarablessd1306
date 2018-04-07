@@ -24,18 +24,18 @@
 #define COM_ScanDir_LR 0
 #define COM_ScanDir_RL 1
 
-static int SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Height );
+static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Height );
 
-int SSD1306_WriteCommand( struct SSD1306_Device* DeviceHandle, SSDCmd SSDCommand ) {
-    NullCheck( DeviceHandle, return 0 );
-    NullCheck( DeviceHandle->WriteCommand, return 0 );
+bool SSD1306_WriteCommand( struct SSD1306_Device* DeviceHandle, SSDCmd SSDCommand ) {
+    NullCheck( DeviceHandle, return false );
+    NullCheck( DeviceHandle->WriteCommand, return false );
 
     return ( DeviceHandle->WriteCommand ) ( DeviceHandle, SSDCommand );
 }
 
-int SSD1306_WriteData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength ) {
-    NullCheck( DeviceHandle, return 0 );
-    NullCheck( DeviceHandle->WriteData, return 0 );
+bool SSD1306_WriteData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength ) {
+    NullCheck( DeviceHandle, return false );
+    NullCheck( DeviceHandle->WriteData, return false );
 
     return ( DeviceHandle->WriteData ) ( DeviceHandle, Data, DataLength );
 }
@@ -182,7 +182,7 @@ void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start,
     SSD1306_WriteCommand( DeviceHandle, End );
 }
 
-int SSD1306_HWReset( struct SSD1306_Device* DeviceHandle ) {
+bool SSD1306_HWReset( struct SSD1306_Device* DeviceHandle ) {
     NullCheck( DeviceHandle, return 0 );
 
     if ( DeviceHandle->Reset != NULL ) {
@@ -192,17 +192,17 @@ int SSD1306_HWReset( struct SSD1306_Device* DeviceHandle ) {
     /* This should always return true if there is no reset callback as
      * no error would have occurred during the non existant reset.
      */
-    return 1;
+    return true;
 }
 
-static int SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Height ) {
+static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Height ) {
     DeviceHandle->Width = Width;
     DeviceHandle->Height = Height;
     DeviceHandle->FramebufferSize = ( DeviceHandle->Width * Height ) / 8;
 
     DeviceHandle->Framebuffer = heap_caps_calloc( 1, DeviceHandle->FramebufferSize, MALLOC_CAP_DMA | MALLOC_CAP_8BIT );
 
-    NullCheck( DeviceHandle->Framebuffer, return 0 );
+    NullCheck( DeviceHandle->Framebuffer, return false );
 
     /* For those who have a hardware reset pin on their display */
     SSD1306_HWReset( DeviceHandle );
@@ -235,10 +235,10 @@ static int SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Hei
     return 1;
 }
 
-int SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
-    NullCheck( DeviceHandle, return 0 );
-    NullCheck( WriteCommand, return 0 );
-    NullCheck( WriteData, return 0 );
+bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
+    NullCheck( DeviceHandle, return false );
+    NullCheck( WriteCommand, return false );
+    NullCheck( WriteData, return false );
 
     memset( DeviceHandle, 0, sizeof( struct SSD1306_Device ) );
 
@@ -251,10 +251,10 @@ int SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height
     return SSD1306_Init( DeviceHandle, Width, Height );
 }
 
-int SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
-    NullCheck( DeviceHandle, return 0 );
-    NullCheck( WriteCommand, return 0 );
-    NullCheck( WriteData, return 0 );
+bool SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
+    NullCheck( DeviceHandle, return false );
+    NullCheck( WriteCommand, return false );
+    NullCheck( WriteData, return false );
 
     memset( DeviceHandle, 0, sizeof( struct SSD1306_Device ) );
 

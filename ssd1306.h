@@ -63,9 +63,12 @@ typedef enum {
 
 struct SSD1306_Device;
 
-typedef int ( *WriteCommandProc ) ( struct SSD1306_Device* DeviceHandle, SSDCmd Command );
-typedef int ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
-typedef int ( *ResetProc ) ( struct SSD1306_Device* DeviceHandle );
+/*
+ * These can optionally return a succeed/fail but are as of yet unused in the driver.
+ */
+typedef bool ( *WriteCommandProc ) ( struct SSD1306_Device* DeviceHandle, SSDCmd Command );
+typedef bool ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
+typedef bool ( *ResetProc ) ( struct SSD1306_Device* DeviceHandle );
 
 struct SSD1306_Device {
     /* I2C Specific */
@@ -110,9 +113,9 @@ void SSD1306_WriteRawData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, s
 void SSD1306_SetColumnAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );
 void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );
 
-int SSD1306_HWReset( struct SSD1306_Device* DeviceHandle );
+bool SSD1306_HWReset( struct SSD1306_Device* DeviceHandle );
 
-int SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
-int SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
+bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
+bool SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
 
 #endif

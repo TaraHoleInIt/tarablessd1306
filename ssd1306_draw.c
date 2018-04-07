@@ -17,7 +17,7 @@
 #include "ssd1306.h"
 #include "ssd1306_draw.h"
 
-__attribute__( ( always_inline ) ) inline static bool IsPixelVisible( struct SSD1306_Device* DeviceHandle, int x, int y )  {
+__attribute__( ( always_inline ) ) static inline bool IsPixelVisible( struct SSD1306_Device* DeviceHandle, int x, int y )  {
     bool Result = (
         ( x >= 0 ) &&
         ( x < DeviceHandle->Width ) &&
@@ -34,7 +34,7 @@ __attribute__( ( always_inline ) ) inline static bool IsPixelVisible( struct SSD
     return Result;
 }
 
-__attribute__( ( always_inline ) ) inline static void SwapInt( int* a, int* b ) {
+__attribute__( ( always_inline ) ) static inline void SwapInt( int* a, int* b ) {
     int Temp = *b;
 
     *b = *a;
