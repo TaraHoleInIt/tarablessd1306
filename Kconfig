@@ -1,5 +1,33 @@
 menu "TarableSSD1306"
 
+config SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+    bool "Enable default i2c master interface code"
+    default false
+    help
+        Provides initialization code for both the i2c bus and i2c display device.
+
+config SSD1306_DEFAULT_I2C_SPEED
+    depends on SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+    int "Bus speed for i2c master"
+    default 250000
+    help
+        Default i2c interface speed in Hz
+
+config SSD1306_DEFAULT_I2C_PORT_NUMBER
+    depends on SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+    int "I2C port number to use"
+    default 0
+
+config SSD1306_DEFAULT_I2C_SCL_PIN
+    depends on SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+    int "Default SCL pin number"
+    default 22
+
+config SSD1306_DEFAULT_I2C_SDA_PIN
+    depends on SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+    int "Default SDA pin number"
+    default 21
+
 config SSD1306_CLIPDEBUG
     int
     default 0 if CLIPDEBUG_NONE

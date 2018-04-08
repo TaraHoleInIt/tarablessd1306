@@ -66,8 +66,6 @@ void SSD1306_FontDrawString( struct SSD1306_Device* Display, int x, int y, const
 void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* Display, TextAnchor Anchor, const char* Text, int Color );
 void SSD1306_FontGetAnchoredStringCoords( struct SSD1306_Device* Display, int* OutX, int* OutY, TextAnchor Anchor, const char* Text );
 
-extern const struct SSD1306_FontDef Font_consola_mono_8x16;
-
 extern const struct SSD1306_FontDef Font_droid_sans_fallback_11x12;
 extern const struct SSD1306_FontDef Font_droid_sans_fallback_16x17;
 extern const struct SSD1306_FontDef Font_droid_sans_fallback_25x25;

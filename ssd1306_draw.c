@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <esp_attr.h>
-#include <esp_panic.h>
-#include <esp_log.h>
 
 #include "ssd1306.h"
 #include "ssd1306_draw.h"

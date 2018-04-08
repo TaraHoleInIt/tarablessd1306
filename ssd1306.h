@@ -8,6 +8,7 @@
 #include <stdbool.h>
 
 #include "sdkconfig.h"
+#include "ssd1306_err.h"
 
 #define SSD_ALWAYS_INLINE __attribute__( ( always_inline ) )
 
@@ -17,20 +18,6 @@
 #if ! defined BIT
 #define BIT( n ) ( 1 << n )
 #endif
-
-#define CheckBounds( expr, retexpr ) { \
-    if ( expr ) { \
-        printf( "[%s:%d] %s\n", __FUNCTION__, __LINE__, #expr ); \
-        retexpr; \
-    } \
-}
-
-#define NullCheck( ptr, retexpr ) { \
-    if ( ptr == NULL ) { \
-        printf( "%s: %s == NULL\n", __FUNCTION__, #ptr ); \
-        retexpr; \
-    }; \
-}
 
 typedef enum {
     SSDCmd_Set_Contrast = 0x81,
@@ -69,8 +56,11 @@ struct SSD1306_Device;
  * These can optionally return a succeed/fail but are as of yet unused in the driver.
  */
 typedef bool ( *WriteCommandProc ) ( struct SSD1306_Device* DeviceHandle, SSDCmd Command );
-typedef bool ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
+typedef bool ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, const uint8_t* Data, size_t DataLength );
 typedef bool ( *ResetProc ) ( struct SSD1306_Device* DeviceHandle );
+
+struct spi_device_t;
+typedef struct spi_device_t* spi_device_handle_t;
 
 struct SSD1306_FontDef;
 
@@ -79,6 +69,7 @@ struct SSD1306_Device {
     int Address;
 
     /* SPI Specific */
+    spi_device_handle_t SPIHandle;
     int RSTPin;
     int CSPin;
 
@@ -92,9 +83,6 @@ struct SSD1306_Device {
     WriteCommandProc WriteCommand;
     WriteDataProc WriteData;
     ResetProc Reset;
-
-    /* Can be anything, a good use might be a device handle for I2C or SPI */
-    uint32_t User0;
 
     const struct SSD1306_FontDef* Font;
     bool FontForceProportional;
@@ -123,7 +111,7 @@ void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start,
 
 bool SSD1306_HWReset( struct SSD1306_Device* DeviceHandle );
 
-bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
-bool SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, uint32_t UserParam, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
+bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
+bool SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, spi_device_handle_t SPIHandle, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
 
 #endif
