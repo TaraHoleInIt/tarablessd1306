@@ -114,5 +114,6 @@ const struct SSD1306_FontDef Font_consola_mono_8x16 = {
     8, 
     16,
     ' ',
-    '\x7F'
+    '\x7F',
+    true
 };

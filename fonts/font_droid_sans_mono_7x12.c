@@ -114,5 +114,6 @@ const struct SSD1306_FontDef Font_droid_sans_mono_7x12 = {
     7,
     12,
     ' ',
-    '\x7F'
+    '\x7F',
+    true
 };

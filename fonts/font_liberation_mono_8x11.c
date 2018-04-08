@@ -114,5 +114,6 @@ const struct SSD1306_FontDef Font_liberation_mono_8x11 = {
     8,
     11,
     ' ',
-    '\x7F'
+    '\x7F',
+    true
 };

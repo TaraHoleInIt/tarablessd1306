@@ -114,5 +114,6 @@ const struct SSD1306_FontDef Font_go_mono_8x12 = {
     8,
     12,
     ' ',
-    '\x7F'
+    '\x7F',
+    true
 };

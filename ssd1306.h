@@ -97,6 +97,8 @@ struct SSD1306_Device {
     uint32_t User0;
 
     const struct SSD1306_FontDef* Font;
+    bool FontForceProportional;
+    bool FontForceMonospace;
 };
 
 void SSD1306_SetMuxRatio( struct SSD1306_Device* DeviceHandle, uint8_t Ratio );

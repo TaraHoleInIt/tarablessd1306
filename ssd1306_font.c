@@ -42,14 +42,27 @@ int SSD1306_FontGetHeight( struct SSD1306_Device* Display ) {
 }
 
 int SSD1306_FontGetCharWidth( struct SSD1306_Device* Display, char Character ) {
+    const uint8_t* CharPtr = NULL;
+    int Width = 0;
+
     NullCheck( Display, return 0 );
     NullCheck( Display->Font, return 0 );
     
     if ( Character >= Display->Font->StartChar && Character <= Display->Font->EndChar ) {
-        return ( int ) ( GetCharPtr( Display->Font, Character )[ 0 ] );
+        CharPtr = GetCharPtr( Display->Font, Character );
+
+        Width = ( Display->Font->Monospace == true ) ? Display->Font->Width : *CharPtr;
+
+        if ( Display->FontForceMonospace == true ) {
+            Width = Display->Font->Width;
+        }
+
+        if ( Display->FontForceProportional == true ) {
+            Width = *CharPtr;
+        }
     }
 
-    return 0;
+    return Width;
 }
 
 int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display ) {

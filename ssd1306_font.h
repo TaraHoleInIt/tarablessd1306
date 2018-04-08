@@ -30,7 +30,10 @@ struct SSD1306_FontDef {
 
     int StartChar;
     int EndChar;
+
+    bool Monospace;
 };
+
 bool SSD1306_SetFont( struct SSD1306_Device* Display, const struct SSD1306_FontDef* Font );
 
 int SSD1306_FontGetWidth( struct SSD1306_Device* Display );

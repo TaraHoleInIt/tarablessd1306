@@ -114,5 +114,6 @@ const struct SSD1306_FontDef Font_droid_sans_fallback_11x12 = {
     11,
     12,
     ' ',
-    '\x7F'
+    '\x7F',
+    false
 };
