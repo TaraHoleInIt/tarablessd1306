@@ -18,7 +18,7 @@ SSD1306_HWReset: Performs a hardware reset, callback to handle reset pin must be
   
 ## Drawing API:  
 SSD1306_Update: Sends the local framebuffer to the display, this MUST be called if you want to see what you drew.  
-SSD1306_Clear: Clears the display  
+SSD1306_Clear: Clears the local framebuffer (Note: Does not send cleared framebuffer to screen on it's own)  
 SSD1306_DrawPixel: Draws a pixel at the given coordinates  
 SSD1306_DrawHLine: Draws a horizontal line  
 SSD1306_DrawVLine: Draws a vertical line  
@@ -43,9 +43,15 @@ SSD1306_FontDrawChar: Draws a character with the current font with the given coo
 SSD1306_FontDrawString: Draws a string with the current font with the given coordinates  
   
 ## Fonts:  
-Consola mono 8x16  
 Droid sans fallback 11x12  
+Droid sans fallback 16x17  
+Droid sans fallback 25x25  
+  
 Droid sans mono 7x12  
-Go mono 8x12  
+Droid sans mono 13x21  
+Droid sans mono 17x27  
+  
 Liberation mono 8x11  
+Liberation mono 13x20  
+Liberation mono 17x27  
 
