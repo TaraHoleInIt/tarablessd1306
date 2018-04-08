@@ -36,9 +36,14 @@ struct SSD1306_FontDef {
 
 bool SSD1306_SetFont( struct SSD1306_Device* Display, const struct SSD1306_FontDef* Font );
 
+void SSD1306_FontForceProportional( struct SSD1306_Device* Display, bool Force );
+void SSD1306_FontForceMonospace( struct SSD1306_Device* Display, bool Force );
+
 int SSD1306_FontGetWidth( struct SSD1306_Device* Display );
 int SSD1306_FontGetHeight( struct SSD1306_Device* Display );
 
+int SSD1306_FontGetMaxCharsPerRow( struct SSD1306_Device* Display );
+int SSD1306_FontGetMaxCharsPerColumn( struct SSD1306_Device* Display );
 
 int SSD1306_FontGetCharWidth( struct SSD1306_Device* Display, char Character );
 int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display );

@@ -23,8 +23,25 @@ bool SSD1306_SetFont( struct SSD1306_Device* Display, const struct SSD1306_FontD
     NullCheck( Display, return false );
     NullCheck( Font, return false );
 
+    Display->FontForceProportional = false;
+    Display->FontForceMonospace = false;
     Display->Font = Font;
+
     return true;
+}
+
+void SSD1306_FontForceProportional( struct SSD1306_Device* Display, bool Force ) {
+    NullCheck( Display, return );
+    NullCheck( Display->Font, return );
+
+    Display->FontForceProportional = Force;
+}
+
+void SSD1306_FontForceMonospace( struct SSD1306_Device* Display, bool Force ) {
+    NullCheck( Display, return );
+    NullCheck( Display->Font, return );
+
+    Display->FontForceMonospace = Force;
 }
 
 int SSD1306_FontGetWidth( struct SSD1306_Device* Display ) {
@@ -63,6 +80,29 @@ int SSD1306_FontGetCharWidth( struct SSD1306_Device* Display, char Character ) {
     }
 
     return Width;
+}
+
+int SSD1306_FontGetMaxCharsPerRow( struct SSD1306_Device* Display ) {
+    int WidestChar = 1;
+    int Width = 0;
+    int i = 0;
+
+    NullCheck( Display, return 0 );
+    NullCheck( Display->Font, return 0 );
+
+    for ( i = Display->Font->StartChar; i <= Display->Font->EndChar; i++ ) {
+        Width = SSD1306_FontGetCharWidth( Display, ( char ) i );
+        WidestChar = ( Width > WidestChar ) ? Width : WidestChar;
+    }
+
+    return Display->Width / WidestChar;
+}
+
+int SSD1306_FontGetMaxCharsPerColumn( struct SSD1306_Device* Display ) {
+    NullCheck( Display, return 0 );
+    NullCheck( Display->Font, return 0 );
+
+    return Display->Width / SSD1306_FontGetCharHeight( Display );    
 }
 
 int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display ) {
