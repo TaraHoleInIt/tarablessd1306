@@ -186,3 +186,90 @@ void SSD1306_FontDrawString( struct SSD1306_Device* Display, int x, int y, const
         Text++;
     }
 }
+
+void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* Display, TextAnchor Anchor, const char* Text, int Color ) {
+    int x = 0;
+    int y = 0;
+
+    NullCheck( Display, return );
+    NullCheck( Text, return );
+
+    SSD1306_FontGetAnchoredStringCoords( Display, &x, &y, Anchor, Text );
+    SSD1306_FontDrawString( Display, x, y, Text, Color );
+}
+
+void SSD1306_FontGetAnchoredStringCoords( struct SSD1306_Device* Display, int* OutX, int* OutY, TextAnchor Anchor, const char* Text ) {
+    int StringWidth = 0;
+    int StringHeight = 0;
+
+    NullCheck( Display, return );
+    NullCheck( OutX, return );
+    NullCheck( OutY, return );
+    NullCheck( Text, return );
+
+    StringWidth = SSD1306_FontMeasureString( Display, Text );
+    StringHeight = SSD1306_FontGetCharHeight( Display );
+
+    switch ( Anchor ) {
+        case TextAnchor_East: {
+            *OutY = ( Display->Height / 2 ) - ( StringHeight / 2 );
+            *OutX = ( Display->Width - StringWidth );
+
+            break;
+        }
+        case TextAnchor_West: {
+            *OutY = ( Display->Height / 2 ) - ( StringHeight / 2 );
+            *OutX = 0;
+
+            break;
+        }
+        case TextAnchor_North: {
+            *OutX = ( Display->Width / 2 ) - ( StringWidth / 2 );
+            *OutY = 0;
+
+            break;
+        }
+        case TextAnchor_South: {
+            *OutX = ( Display->Width / 2 ) - ( StringWidth / 2 );
+            *OutY = ( Display->Height - StringHeight );
+            
+            break;
+        }
+        case TextAnchor_NorthEast: {
+            *OutX = ( Display->Width - StringWidth );
+            *OutY = 0;
+
+            break;
+        }
+        case TextAnchor_NorthWest: {
+            *OutY = 0;
+            *OutX = 0;
+
+            break;
+        }
+        case TextAnchor_SouthEast: {
+            *OutY = ( Display->Height - StringHeight );
+            *OutX = ( Display->Width - StringWidth );
+
+            break;
+        }
+        case TextAnchor_SouthWest: {
+            *OutY = ( Display->Height - StringHeight );
+            *OutX = 0;
+
+            break;
+        }
+        case TextAnchor_Center: {
+            *OutY = ( Display->Height / 2 ) - ( StringHeight / 2 );
+            *OutX = ( Display->Width / 2 ) - ( StringWidth / 2 );
+
+            break;
+        }
+        default: {
+            *OutX = 128;
+            *OutY = 64;
+            
+            break;
+        }
+    };
+}

@@ -41,6 +41,17 @@ SSD1306_FontGetCharHeight: Returns the height of characters in the current font,
 SSD1306_FontMeasureString: Returns the number of pixels wide the given string is with the current font  
 SSD1306_FontDrawChar: Draws a character with the current font with the given coordinates  
 SSD1306_FontDrawString: Draws a string with the current font with the given coordinates  
+SSD1306_FontDrawAnchoredString: Draws a string aligned to one of the cardinal directions, for example TextAnchor_NorthWest is 0,0  
+SSD1306_FontGetAnchoredStringCoords: Used to get x and y coordinates of the given string and text anchor  
+  
+## Text anchors:  
+TextAnchor_NorthEast: String is drawn from the top right of the screen  
+TextAnchor_NorthWest: String is drawn from the top left of the screen  
+TextAnchor_North: String is drawn at the top center of the screen  
+TextAnchor_South: String is drawn at the bottom center of the screen  
+TextAnchor_SouthEast: String is drawn at the bottom right of the screen  
+TextAnchor_SouthWest: String is drawn at the bottom left of the screen  
+TextAnchor_Center: String is drawn at the center of the screen  
   
 ## Fonts:  
 Droid sans fallback 11x12  

@@ -34,6 +34,18 @@ struct SSD1306_FontDef {
     bool Monospace;
 };
 
+typedef enum {
+    TextAnchor_East = 0,
+    TextAnchor_West,
+    TextAnchor_North,
+    TextAnchor_South,
+    TextAnchor_NorthEast,
+    TextAnchor_NorthWest,
+    TextAnchor_SouthEast,
+    TextAnchor_SouthWest,
+    TextAnchor_Center
+} TextAnchor;
+
 bool SSD1306_SetFont( struct SSD1306_Device* Display, const struct SSD1306_FontDef* Font );
 
 void SSD1306_FontForceProportional( struct SSD1306_Device* Display, bool Force );
@@ -51,6 +63,8 @@ int SSD1306_FontMeasureString( struct SSD1306_Device* Display, const char* Text 
 
 void SSD1306_FontDrawChar( struct SSD1306_Device* Display, char Character, int x, int y, int Color );
 void SSD1306_FontDrawString( struct SSD1306_Device* Display, int x, int y, const char* Text, int Color );
+void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* Display, TextAnchor Anchor, const char* Text, int Color );
+void SSD1306_FontGetAnchoredStringCoords( struct SSD1306_Device* Display, int* OutX, int* OutY, TextAnchor Anchor, const char* Text );
 
 extern const struct SSD1306_FontDef Font_consola_mono_8x16;
 
