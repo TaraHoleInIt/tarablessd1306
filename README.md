@@ -14,7 +14,9 @@ It supports multiple display sizes on both i2c and spi interfaces.
 ## Initialization:  
 SSD1306_Init_I2C: Sets up a display that will be connected via i2c  
 SSD1306_Init_SPI: Sets up a display that will be connected via SPI  
-SSD1306_HWReset: Performs a hardware reset, callback to handle reset pin must be provided
+SSD1306_HWReset: Performs a hardware reset, callback to handle reset pin must be provided  
+SSD1306_I2CMasterInitDefault: If configured, will provide initialization for the i2c bus  
+SSD1306_I2CMasterAttachDisplayDefault: If configured, connects a display via i2c using the component configuration  
   
 ## Drawing API:  
 SSD1306_Update: Sends the local framebuffer to the display, this MUST be called if you want to see what you drew.  
