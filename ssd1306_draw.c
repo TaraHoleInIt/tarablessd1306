@@ -55,7 +55,12 @@ static inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* Devic
     Y>>= 3;
 
     FBOffset = DeviceHandle->Framebuffer + ( ( Y * DeviceHandle->Width ) + X );
-    *FBOffset = ( Color == SSD_COLOR_WHITE ) ? *FBOffset | BIT( YBit ) : *FBOffset & ~BIT( YBit );
+
+    if ( Color == SSD_COLOR_XOR ) {
+        *FBOffset ^= BIT( YBit );
+    } else {
+        *FBOffset = ( Color == SSD_COLOR_WHITE ) ? *FBOffset | BIT( YBit ) : *FBOffset & ~BIT( YBit );
+    }
 }
 
 static inline void IRAM_ATTR SSD1306_XorPixelFast( struct SSD1306_Device* DeviceHandle, int x, int y ) {

@@ -34,8 +34,9 @@ extern "C" {
     }
 #endif
 
-#define SSD_COLOR_WHITE 1
 #define SSD_COLOR_BLACK 0
+#define SSD_COLOR_WHITE 1
+#define SSD_COLOR_XOR 2
 
 void SSD1306_Clear( struct SSD1306_Device* DeviceHandle, int Color );
 void SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int X, int Y, int Color );
