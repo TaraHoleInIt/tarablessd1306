@@ -102,7 +102,7 @@ int SSD1306_FontGetMaxCharsPerColumn( struct SSD1306_Device* Display ) {
     NullCheck( Display, return 0 );
     NullCheck( Display->Font, return 0 );
 
-    return Display->Width / SSD1306_FontGetCharHeight( Display );    
+    return Display->Height / SSD1306_FontGetCharHeight( Display );    
 }
 
 int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display ) {
