@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#include <esp_panic.h>
-#include <esp_log.h>
 #include "sdkconfig.h"
 
 #define SSD1306_CLIPDEBUG_NONE 0

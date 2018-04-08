@@ -9,6 +9,8 @@
 
 #include "sdkconfig.h"
 
+#define SSD_ALWAYS_INLINE __attribute__( ( always_inline ) )
+
 #define SSD1306_Max_Col 127
 #define SSD1306_Max_Row 7
 
@@ -70,6 +72,8 @@ typedef bool ( *WriteCommandProc ) ( struct SSD1306_Device* DeviceHandle, SSDCmd
 typedef bool ( *WriteDataProc ) ( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
 typedef bool ( *ResetProc ) ( struct SSD1306_Device* DeviceHandle );
 
+struct SSD1306_FontDef;
+
 struct SSD1306_Device {
     /* I2C Specific */
     int Address;
@@ -91,6 +95,8 @@ struct SSD1306_Device {
 
     /* Can be anything, a good use might be a device handle for I2C or SPI */
     uint32_t User0;
+
+    const struct SSD1306_FontDef* Font;
 };
 
 void SSD1306_SetMuxRatio( struct SSD1306_Device* DeviceHandle, uint8_t Ratio );
