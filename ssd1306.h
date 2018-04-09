@@ -111,7 +111,7 @@ void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start,
 
 bool SSD1306_HWReset( struct SSD1306_Device* DeviceHandle );
 
-bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
+bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, int ResetPin, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
 bool SSD1306_Init_SPI( struct SSD1306_Device* DeviceHandle, int Width, int Height, int ResetPin, int CSPin, spi_device_handle_t SPIHandle, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset );
 
 #endif

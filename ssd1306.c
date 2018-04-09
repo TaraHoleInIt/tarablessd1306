@@ -235,7 +235,7 @@ static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int He
     return 1;
 }
 
-bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
+bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, int ResetPin, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
     NullCheck( DeviceHandle, return false );
     NullCheck( WriteCommand, return false );
     NullCheck( WriteData, return false );
@@ -246,6 +246,7 @@ bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Heigh
     DeviceHandle->WriteData = WriteData;
     DeviceHandle->Reset = Reset;
     DeviceHandle->Address = I2CAddress;
+    DeviceHandle->RSTPin = ResetPin;
     
     return SSD1306_Init( DeviceHandle, Width, Height );
 }

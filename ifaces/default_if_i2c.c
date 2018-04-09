@@ -82,6 +82,7 @@ bool SSD1306_I2CMasterAttachDisplayDefault( struct SSD1306_Device* DisplayHandle
         Width,
         Height,
         I2CAddress,
+        RSTPin,
         I2CDefaultWriteCommand,
         I2CDefaultWriteData,
         I2CDefaultReset
