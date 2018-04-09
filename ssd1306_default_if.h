@@ -27,6 +27,9 @@ bool SSD1306_I2CMasterInitDefault( void );
  */
 bool SSD1306_I2CMasterAttachDisplayDefault( struct SSD1306_Device* DisplayHandle, int Width, int Height, int I2CAddress, int RSTPin );
 
+bool SSD1306_SPIMasterInitDefault( void );
+bool SSD1306_SPIMasterAttachDisplayDefault( struct SSD1306_Device* DeviceHandle, int Width, int Height, int CSForThisDisplay, int RSTForThisDisplay );
+
 #ifdef __cplusplus
 }
 #endif

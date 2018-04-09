@@ -14,6 +14,13 @@
 #include "ssd1306.h"
 #include "ssd1306_default_if.h"
 
+/*
+ * HACKHACKHACK:
+ * Conditional compiling in component.mk does not seem to be working.
+ * This workaround looks ugly, but should work.
+ */
+#if defined CONFIG_SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
+
 static const int I2CDisplaySpeed = CONFIG_SSD1306_DEFAULT_I2C_SPEED;
 static const int I2CPortNumber = CONFIG_SSD1306_DEFAULT_I2C_PORT_NUMBER;
 static const int SCLPin = CONFIG_SSD1306_DEFAULT_I2C_SCL_PIN;
@@ -67,8 +74,8 @@ bool SSD1306_I2CMasterAttachDisplayDefault( struct SSD1306_Device* DisplayHandle
     NullCheck( DisplayHandle, return false );
 
     if ( RSTPin >= 0 ) {
-        gpio_set_direction( RSTPin, GPIO_MODE_OUTPUT );
-        gpio_set_level( RSTPin, 1 );
+        ESP_ERROR_CHECK_NONFATAL( gpio_set_direction( RSTPin, GPIO_MODE_OUTPUT ), return false );
+        ESP_ERROR_CHECK_NONFATAL( gpio_set_level( RSTPin, 1 ), return false );
     }
 
     return SSD1306_Init_I2C( DisplayHandle,
@@ -88,7 +95,7 @@ static bool I2CDefaultWriteBytes( int Address, bool IsCommand, const uint8_t* Da
     NullCheck( Data, return false );
 
     if ( ( CommandHandle = i2c_cmd_link_create( ) ) != NULL ) {
-        ModeByte = ( IsCommand == true ) ? 0x80 : 0x40;
+        ModeByte = ( IsCommand == true ) ? SSD1306_I2C_COMMAND_MODE: SSD1306_I2C_DATA_MODE;
 
         ESP_ERROR_CHECK_NONFATAL( i2c_master_start( CommandHandle ), return false );
             ESP_ERROR_CHECK_NONFATAL( i2c_master_write_byte( CommandHandle, ( Address << 1 ) | I2C_MASTER_WRITE, true ), return false );
@@ -128,3 +135,5 @@ static bool I2CDefaultReset( struct SSD1306_Device* Display ) {
 
     return true;
 }
+
+#endif

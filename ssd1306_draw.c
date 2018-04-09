@@ -61,11 +61,6 @@ static inline void IRAM_ATTR SSD1306_DrawPixelFast( struct SSD1306_Device* Devic
     }
 }
 
-static inline void IRAM_ATTR SSD1306_XorPixelFast( struct SSD1306_Device* DeviceHandle, int x, int y ) {
-    int YBit = ( y & 0x07 );
-    DeviceHandle->Framebuffer[ x + ( ( y >> 3 ) * DeviceHandle->Width ) ] ^= BIT( YBit );
-}
-
 void IRAM_ATTR SSD1306_DrawPixel( struct SSD1306_Device* DeviceHandle, int x, int y, int Color ) {
     NullCheck( DeviceHandle, return );
 
@@ -83,6 +78,8 @@ void IRAM_ATTR SSD1306_DrawHLine( struct SSD1306_Device* DeviceHandle, int x, in
     for ( ; x <= XEnd; x++ ) {
         if ( IsPixelVisible( DeviceHandle, x, y ) == true ) {
             SSD1306_DrawPixelFast( DeviceHandle, x, y, Color );
+        } else {
+            break;
         }
     }
 }
@@ -96,6 +93,8 @@ void IRAM_ATTR SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, in
     for ( ; y <= YEnd; y++ ) {
         if ( IsPixelVisible( DeviceHandle, x, y ) == true ) {
             SSD1306_DrawPixel( DeviceHandle, x, y, Color );
+        } else {
+            break;
         }
     }
 }

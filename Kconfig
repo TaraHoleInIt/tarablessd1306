@@ -28,6 +28,54 @@ config SSD1306_DEFAULT_I2C_SDA_PIN
     int "Default SDA pin number"
     default 21
 
+config SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    bool "Enable default SPI interface"
+    default false
+    help
+        Provides initialization code for both the i2c device and spi attached display.
+
+config SSD1306_DEFAULT_SPI_HOST
+    depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    int
+    default 1 if SSD1306_USE_HSPI_HOST
+    default 2 if SSD1306_USE_VSPI_HOST
+
+    choice
+        depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+        prompt "Default SPI host"
+        default SSD1306_USE_HSPI_HOST
+
+        config SSD1306_USE_HSPI_HOST
+            bool "HSPI"
+
+        config SSD1306_USE_VSPI_HOST
+            bool "VSPI"
+    endchoice
+
+config SSD1306_DEFAULT_SPI_FREQUENCY
+    depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    int "Default frequency for SPI attached display"
+    default 1000000
+
+config SSD1306_DEFAULT_SPI_MOSI_PIN
+    depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    int "Default MOSI pin number"
+    default 13
+
+config SSD1306_DEFAULT_SPI_SCLK_PIN
+    depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    int "Default SCLK pin number"
+    default 14
+
+config SSD1306_DEFAULT_SPI_DC_PIN
+    depends on SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
+    int "Default DC pin number"
+    default 33
+
+config SSD1306_ERROR_ABORT
+    bool "Call abort() on all errors"
+    default true
+
 config SSD1306_CLIPDEBUG
     int
     default 0 if CLIPDEBUG_NONE
