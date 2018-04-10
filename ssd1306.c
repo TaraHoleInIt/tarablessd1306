@@ -232,7 +232,7 @@ static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int He
     SSD1306_DisplayOn( DeviceHandle );
     SSD1306_Update( DeviceHandle );
 
-    return 1;
+    return true;
 }
 
 bool SSD1306_Init_I2C( struct SSD1306_Device* DeviceHandle, int Width, int Height, int I2CAddress, int ResetPin, WriteCommandProc WriteCommand, WriteDataProc WriteData, ResetProc Reset ) {
