@@ -45,4 +45,8 @@ void SSD1306_DrawVLine( struct SSD1306_Device* DeviceHandle, int x, int y, int H
 void SSD1306_DrawLine( struct SSD1306_Device* DeviceHandle, int x0, int y0, int x1, int y1, int Color );
 void SSD1306_DrawBox( struct SSD1306_Device* DeviceHandle, int x1, int y1, int x2, int y2, int Color, bool Fill );
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif
