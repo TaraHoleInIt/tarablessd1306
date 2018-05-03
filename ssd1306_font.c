@@ -8,11 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <math.h>
 #include "ssd1306.h"
 #include "ssd1306_draw.h"
 #include "ssd1306_font.h"
 
-__attribute__( ( always_inline ) ) static inline int RoundUpFontHeight( const struct SSD1306_FontDef* Font ) {
+static int RoundUpFontHeight( const struct SSD1306_FontDef* Font ) {
     int Height = Font->Height;
 
     if ( ( Height % 8 ) != 0 ) {
@@ -22,8 +23,77 @@ __attribute__( ( always_inline ) ) static inline int RoundUpFontHeight( const st
     return Height;
 }
 
-__attribute__( ( always_inline ) ) static inline const uint8_t* GetCharPtr( const struct SSD1306_FontDef* Font, char Character ) {
+static const uint8_t* GetCharPtr( const struct SSD1306_FontDef* Font, char Character ) {
     return &Font->FontData[ ( Character - Font->StartChar ) * ( ( Font->Width * ( RoundUpFontHeight( Font ) / 8 ) ) + 1 ) ];
+}
+
+void SSD1306_FontDrawChar( struct SSD1306_Device* DisplayHandle, char Character, int x, int y, int Color ) {
+    const uint8_t* GlyphData = NULL;
+    int GlyphColumnLen = 0;
+    int CharStartX =  0;
+    int CharStartY = 0;
+    int CharWidth = 0;
+    int CharHeight = 0;
+    int CharEndX = 0;
+    int CharEndY = 0;
+    int OffsetX = 0;
+    int OffsetY = 0;
+    int YByte = 0;
+    int YBit = 0;
+    int i = 0;
+
+    NullCheck( DisplayHandle, return );
+    NullCheck( DisplayHandle->Font, return );
+    
+    NullCheck( ( GlyphData = GetCharPtr( DisplayHandle->Font, Character ) ), return );
+
+    /* The first byte in the glyph data is the width of the character in pixels, skip over */
+    GlyphData++;
+    GlyphColumnLen = RoundUpFontHeight( DisplayHandle->Font ) / 8;
+    
+    CharWidth = SSD1306_FontGetCharWidth( DisplayHandle, Character );
+    CharHeight = SSD1306_FontGetHeight( DisplayHandle );
+
+    CharStartX = x;
+    CharStartY = y;
+    
+    CharEndX = CharStartX + CharWidth;
+    CharEndY = CharStartY + CharHeight;
+
+    /* If the character is partially offscreen offset the end by
+     * distance between (coord) and 0.
+     */
+    OffsetX = ( CharStartX < 0 ) ? abs( CharStartX ) : 0;
+    OffsetY = ( CharStartY < 0 ) ? abs( CharStartY ) : 0;
+
+    /* This skips into the proper column within the glyph data */
+    GlyphData+= ( OffsetX * GlyphColumnLen );
+
+    CharStartX+= OffsetX;
+    CharStartY+= OffsetY;
+
+    /* Do not attempt to draw if this character is entirely offscreen */
+    if ( CharEndX < 0 || CharStartX >= DisplayHandle->Width || CharEndY < 0 || CharStartY >= DisplayHandle->Height ) {
+        ClipDebug( x, y );
+        return;
+    }
+
+    /* Do not attempt to draw past the end of the screen */
+    CharEndX = ( CharEndX >= DisplayHandle->Width ) ? DisplayHandle->Width - 1 : CharEndX;
+    CharEndY = ( CharEndY >= DisplayHandle->Height ) ? DisplayHandle->Height - 1 : CharEndY;
+
+    for ( x = CharStartX; x < CharEndX; x++ ) {
+        for ( y = CharStartY, i = 0; y < CharEndY && i < CharHeight; y++, i++ ) {
+            YByte = ( i + OffsetY ) / 8;
+            YBit = ( i + OffsetY ) & 0x07;
+
+            if ( GlyphData[ YByte ] & BIT( YBit ) ) {
+                SSD1306_DrawPixel( DisplayHandle, x, y, Color );
+            }            
+        }
+
+        GlyphData+= GlyphColumnLen;
+    }
 }
 
 bool SSD1306_SetFont( struct SSD1306_Device* Display, const struct SSD1306_FontDef* Font ) {
@@ -90,26 +160,17 @@ int SSD1306_FontGetCharWidth( struct SSD1306_Device* Display, char Character ) {
 }
 
 int SSD1306_FontGetMaxCharsPerRow( struct SSD1306_Device* Display ) {
-    int WidestChar = 1;
-    int Width = 0;
-    int i = 0;
-
     NullCheck( Display, return 0 );
     NullCheck( Display->Font, return 0 );
 
-    for ( i = Display->Font->StartChar; i <= Display->Font->EndChar; i++ ) {
-        Width = SSD1306_FontGetCharWidth( Display, ( char ) i );
-        WidestChar = ( Width > WidestChar ) ? Width : WidestChar;
-    }
-
-    return Display->Width / WidestChar;
+    return Display->Width / Display->Font->Width;
 }
 
 int SSD1306_FontGetMaxCharsPerColumn( struct SSD1306_Device* Display ) {
     NullCheck( Display, return 0 );
     NullCheck( Display->Font, return 0 );
 
-    return Display->Height / SSD1306_FontGetCharHeight( Display );    
+    return Display->Height / Display->Font->Height;    
 }
 
 int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display ) {
@@ -117,41 +178,6 @@ int SSD1306_FontGetCharHeight( struct SSD1306_Device* Display ) {
     NullCheck( Display->Font, return 0 );
 
     return Display->Font->Height;
-}
-
-void SSD1306_FontDrawChar( struct SSD1306_Device* Display, char Character, int x, int y, int Color ) {
-    const uint8_t* GlyphData = NULL;
-    int Width = 0;
-    int Height = 0;
-    int Bit = 0;
-    int x2 = 0;
-    int y2 = 0;
-
-    NullCheck( Display, return );
-    NullCheck( Display->Font, return );
-
-    GlyphData = GetCharPtr( Display->Font, Character ) + 1;
-
-    if ( GlyphData != NULL ) {
-        Width = SSD1306_FontGetCharWidth( Display, Character );
-        Height = RoundUpFontHeight( Display->Font ) / 8;
-
-        for ( x2 = 0; x2 < Width; x2++ ) {
-            for ( y2 = 0; y2 < Height; y2++ ) {
-                for ( Bit = 7; Bit >= 0; Bit-- ) {
-                    if ( *GlyphData & BIT( Bit ) ) {
-                        SSD1306_DrawPixel( Display,
-                            x + x2,
-                            y + Bit + ( y2 * 8 ),
-                            Color
-                        );
-                    }
-                }
-
-                GlyphData++;
-            }
-        }
-    }
 }
 
 int SSD1306_FontMeasureString( struct SSD1306_Device* Display, const char* Text ) {
