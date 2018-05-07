@@ -66,17 +66,17 @@ void SSD1306_FontDrawString( struct SSD1306_Device* Display, int x, int y, const
 void SSD1306_FontDrawAnchoredString( struct SSD1306_Device* Display, TextAnchor Anchor, const char* Text, int Color );
 void SSD1306_FontGetAnchoredStringCoords( struct SSD1306_Device* Display, int* OutX, int* OutY, TextAnchor Anchor, const char* Text );
 
-extern const struct SSD1306_FontDef Font_droid_sans_fallback_11x12;
-extern const struct SSD1306_FontDef Font_droid_sans_fallback_16x17;
-extern const struct SSD1306_FontDef Font_droid_sans_fallback_25x25;
+extern const struct SSD1306_FontDef Font_droid_sans_fallback_11x13;
+extern const struct SSD1306_FontDef Font_droid_sans_fallback_15x17;
+extern const struct SSD1306_FontDef Font_droid_sans_fallback_24x28;
 
-extern const struct SSD1306_FontDef Font_droid_sans_mono_7x12;
-extern const struct SSD1306_FontDef Font_droid_sans_mono_13x21;
-extern const struct SSD1306_FontDef Font_droid_sans_mono_17x30;
+extern const struct SSD1306_FontDef Font_droid_sans_mono_7x13;
+extern const struct SSD1306_FontDef Font_droid_sans_mono_13x24;
+extern const struct SSD1306_FontDef Font_droid_sans_mono_16x31;
 
-extern const struct SSD1306_FontDef Font_liberation_mono_8x11;
-extern const struct SSD1306_FontDef Font_liberation_mono_13x20;
-extern const struct SSD1306_FontDef Font_liberation_mono_17x27;
+extern const struct SSD1306_FontDef Font_liberation_mono_9x15;
+extern const struct SSD1306_FontDef Font_liberation_mono_13x21;
+extern const struct SSD1306_FontDef Font_liberation_mono_17x30;
 
 #ifdef __cplusplus
 }

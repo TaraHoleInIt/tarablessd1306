@@ -47,52 +47,54 @@ void SSD1306_FontDrawChar( struct SSD1306_Device* DisplayHandle, char Character,
     
     NullCheck( ( GlyphData = GetCharPtr( DisplayHandle->Font, Character ) ), return );
 
-    /* The first byte in the glyph data is the width of the character in pixels, skip over */
-    GlyphData++;
-    GlyphColumnLen = RoundUpFontHeight( DisplayHandle->Font ) / 8;
-    
-    CharWidth = SSD1306_FontGetCharWidth( DisplayHandle, Character );
-    CharHeight = SSD1306_FontGetHeight( DisplayHandle );
+    if ( Character >= DisplayHandle->Font->StartChar || Character <= DisplayHandle->Font->EndChar ) {
+        /* The first byte in the glyph data is the width of the character in pixels, skip over */
+        GlyphData++;
+        GlyphColumnLen = RoundUpFontHeight( DisplayHandle->Font ) / 8;
+        
+        CharWidth = SSD1306_FontGetCharWidth( DisplayHandle, Character );
+        CharHeight = SSD1306_FontGetHeight( DisplayHandle );
 
-    CharStartX = x;
-    CharStartY = y;
-    
-    CharEndX = CharStartX + CharWidth;
-    CharEndY = CharStartY + CharHeight;
+        CharStartX = x;
+        CharStartY = y;
+        
+        CharEndX = CharStartX + CharWidth;
+        CharEndY = CharStartY + CharHeight;
 
-    /* If the character is partially offscreen offset the end by
-     * distance between (coord) and 0.
-     */
-    OffsetX = ( CharStartX < 0 ) ? abs( CharStartX ) : 0;
-    OffsetY = ( CharStartY < 0 ) ? abs( CharStartY ) : 0;
+        /* If the character is partially offscreen offset the end by
+        * distance between (coord) and 0.
+        */
+        OffsetX = ( CharStartX < 0 ) ? abs( CharStartX ) : 0;
+        OffsetY = ( CharStartY < 0 ) ? abs( CharStartY ) : 0;
 
-    /* This skips into the proper column within the glyph data */
-    GlyphData+= ( OffsetX * GlyphColumnLen );
+        /* This skips into the proper column within the glyph data */
+        GlyphData+= ( OffsetX * GlyphColumnLen );
 
-    CharStartX+= OffsetX;
-    CharStartY+= OffsetY;
+        CharStartX+= OffsetX;
+        CharStartY+= OffsetY;
 
-    /* Do not attempt to draw if this character is entirely offscreen */
-    if ( CharEndX < 0 || CharStartX >= DisplayHandle->Width || CharEndY < 0 || CharStartY >= DisplayHandle->Height ) {
-        ClipDebug( x, y );
-        return;
-    }
-
-    /* Do not attempt to draw past the end of the screen */
-    CharEndX = ( CharEndX >= DisplayHandle->Width ) ? DisplayHandle->Width - 1 : CharEndX;
-    CharEndY = ( CharEndY >= DisplayHandle->Height ) ? DisplayHandle->Height - 1 : CharEndY;
-
-    for ( x = CharStartX; x < CharEndX; x++ ) {
-        for ( y = CharStartY, i = 0; y < CharEndY && i < CharHeight; y++, i++ ) {
-            YByte = ( i + OffsetY ) / 8;
-            YBit = ( i + OffsetY ) & 0x07;
-
-            if ( GlyphData[ YByte ] & BIT( YBit ) ) {
-                SSD1306_DrawPixel( DisplayHandle, x, y, Color );
-            }            
+        /* Do not attempt to draw if this character is entirely offscreen */
+        if ( CharEndX < 0 || CharStartX >= DisplayHandle->Width || CharEndY < 0 || CharStartY >= DisplayHandle->Height ) {
+            ClipDebug( x, y );
+            return;
         }
 
-        GlyphData+= GlyphColumnLen;
+        /* Do not attempt to draw past the end of the screen */
+        CharEndX = ( CharEndX >= DisplayHandle->Width ) ? DisplayHandle->Width - 1 : CharEndX;
+        CharEndY = ( CharEndY >= DisplayHandle->Height ) ? DisplayHandle->Height - 1 : CharEndY;
+
+        for ( x = CharStartX; x < CharEndX; x++ ) {
+            for ( y = CharStartY, i = 0; y < CharEndY && i < CharHeight; y++, i++ ) {
+                YByte = ( i + OffsetY ) / 8;
+                YBit = ( i + OffsetY ) & 0x07;
+
+                if ( GlyphData[ YByte ] & BIT( YBit ) ) {
+                    SSD1306_DrawPixel( DisplayHandle, x, y, Color );
+                }            
+            }
+
+            GlyphData+= GlyphColumnLen;
+        }
     }
 }
 
