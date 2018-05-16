@@ -2,7 +2,7 @@ menu "TarableSSD1306"
 
 config SSD1306_ENABLE_DEFAULT_I2C_INTERFACE
     bool "Enable default i2c master interface code"
-    default false
+    default y
     help
         Provides initialization code for both the i2c bus and i2c display device.
 
@@ -30,7 +30,7 @@ config SSD1306_DEFAULT_I2C_SDA_PIN
 
 config SSD1306_ENABLE_DEFAULT_SPI_INTERFACE
     bool "Enable default SPI interface"
-    default false
+    default y
     help
         Provides initialization code for both the i2c device and spi attached display.
 
@@ -74,7 +74,7 @@ config SSD1306_DEFAULT_SPI_DC_PIN
 
 config SSD1306_ERROR_ABORT
     bool "Call abort() on all errors"
-    default true
+    default y
 
 config SSD1306_CLIPDEBUG
     int

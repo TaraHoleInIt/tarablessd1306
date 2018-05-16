@@ -78,6 +78,9 @@ extern const struct SSD1306_FontDef Font_liberation_mono_9x15;
 extern const struct SSD1306_FontDef Font_liberation_mono_13x21;
 extern const struct SSD1306_FontDef Font_liberation_mono_17x30;
 
+extern const struct SSD1306_FontDef Font_Tarable7Seg_16x32;
+extern const struct SSD1306_FontDef Font_Tarable7Seg_32x64;
+
 #ifdef __cplusplus
 }
 #endif
