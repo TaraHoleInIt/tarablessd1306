@@ -26,7 +26,7 @@ static const int I2CPortNumber = CONFIG_SSD1306_DEFAULT_I2C_PORT_NUMBER;
 static const int SCLPin = CONFIG_SSD1306_DEFAULT_I2C_SCL_PIN;
 static const int SDAPin = CONFIG_SSD1306_DEFAULT_I2C_SDA_PIN;
 
-static const int SSD1306_I2C_COMMAND_MODE = 0x80;
+static const int SSD1306_I2C_COMMAND_MODE = 0x00;
 static const int SSD1306_I2C_DATA_MODE = 0x40;
 
 static bool I2CDefaultWriteBytes( int Address, bool IsCommand, const uint8_t* Data, size_t DataLength );
