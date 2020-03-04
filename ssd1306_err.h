@@ -2,7 +2,9 @@
 #define _SSD1306_ERR_H_
 
 #include <esp_log.h>
-#include <esp_panic.h>
+#include <esp_debug_helpers.h>
+#include <esp_private/panic_reason.h>
+
 
 #if CONFIG_SSD1306_ERROR_ABORT
     #define SSD1306_DoAbort( ) abort( )
