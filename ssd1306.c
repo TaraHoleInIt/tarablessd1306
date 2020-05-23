@@ -75,6 +75,9 @@ static void SetCOMPinConfiguration( struct SSD1306_Device* DeviceHandle, uint32_
     SSD1306_WriteCommand( DeviceHandle, 
         ( ScanDir == COM_ScanDir_LR ) ? SSDCmd_Set_Display_VFlip_Off : SSDCmd_Set_Display_VFlip_On
     );
+    SSD1306_WriteCommand( DeviceHandle,
+        ( ScanDir == COM_ScanDir_LR ) ? SSDCmd_Set_Display_HFlip_Off : SSDCmd_Set_Display_HFlip_On
+    );
 }
 
 void SSD1306_SetContrast( struct SSD1306_Device* DeviceHandle, uint8_t Contrast ) {
@@ -193,6 +196,21 @@ bool SSD1306_HWReset( struct SSD1306_Device* DeviceHandle ) {
      * no error would have occurred during the non existant reset.
      */
     return true;
+}
+
+void SSD1306_Rotate180( struct SSD1306_Device* DeviceHandle ) {
+    NullCheck( DeviceHandle, return );
+    /* Behaviour unknown on full size displays, just return. */
+    if ( DeviceHandle->Height == 64 ) {
+        return;
+    }
+    if ( DeviceHandle->Rotated ) {
+        DeviceHandle->Rotated = false;
+        SetCOMPinConfiguration( DeviceHandle, COM_Disable_LR_Remap, COM_Pins_Sequential, COM_ScanDir_LR );
+    } else {
+        DeviceHandle->Rotated = true;
+        SetCOMPinConfiguration( DeviceHandle, COM_Enable_LR_Remap, COM_Pins_Sequential, COM_ScanDir_RL );
+    }
 }
 
 static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int Height ) {

@@ -92,6 +92,7 @@ struct SSD1306_Device {
     const struct SSD1306_FontDef* Font;
     bool FontForceProportional;
     bool FontForceMonospace;
+    bool Rotated;
 };
 
 void SSD1306_SetMuxRatio( struct SSD1306_Device* DeviceHandle, uint8_t Ratio );
@@ -110,6 +111,7 @@ void SSD1306_SetDisplayAddressMode( struct SSD1306_Device* DeviceHandle, SSD1306
 void SSD1306_Update( struct SSD1306_Device* DeviceHandle );
 void SSD1306_SetDisplayClocks( struct SSD1306_Device* DeviceHandle, uint32_t DisplayClockDivider, uint32_t OSCFrequency );
 void SSD1306_WriteRawData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, size_t DataLength );
+void SSD1306_Rotate180( struct SSD1306_Device* DeviceHandle );
 
 void SSD1306_SetColumnAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );
 void SSD1306_SetPageAddress( struct SSD1306_Device* DeviceHandle, uint8_t Start, uint8_t End );
