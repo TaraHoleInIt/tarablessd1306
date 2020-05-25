@@ -59,6 +59,29 @@ bool SSD1306_I2CMasterInitDefault( void ) {
 }
 
 /*
+ * Checks to see if the device at the given address is connected.
+ *
+ * Returns true if device is connected.
+ */
+bool SSD1306_IsDisplayAttached( int I2CAddress ) {
+    i2c_cmd_handle_t CommandHandle = NULL;
+    bool Result = false;
+    
+    if ( ( CommandHandle = i2c_cmd_link_create( ) ) != NULL ) {
+        i2c_master_start( CommandHandle );
+            i2c_master_write_byte( CommandHandle, ( I2CAddress << 1 ) | I2C_MASTER_WRITE, true );
+            i2c_master_write_byte( CommandHandle, SSD1306_I2C_COMMAND_MODE, true );
+            i2c_master_write_byte( CommandHandle, 0, true );
+        i2c_master_stop( CommandHandle );
+
+        Result = i2c_master_cmd_begin( I2CPortNumber, CommandHandle, pdMS_TO_TICKS( 1000 ) ) == ESP_OK ? true : false;
+        i2c_cmd_link_delete( CommandHandle );
+    }
+
+    return Result;
+}
+
+/*
  * Attaches a display to the I2C bus using default communication functions.
  * 
  * Params:
@@ -78,7 +101,7 @@ bool SSD1306_I2CMasterAttachDisplayDefault( struct SSD1306_Device* DisplayHandle
         ESP_ERROR_CHECK_NONFATAL( gpio_set_level( RSTPin, 1 ), return false );
     }
 
-    return SSD1306_Init_I2C( DisplayHandle,
+    return SSD1306_IsDisplayAttached( I2CAddress ) && SSD1306_Init_I2C( DisplayHandle,
         Width,
         Height,
         I2CAddress,

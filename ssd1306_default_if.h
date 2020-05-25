@@ -14,6 +14,13 @@ extern "C" {
 bool SSD1306_I2CMasterInitDefault( void );
 
 /*
+ * Checks to see if the device at the given address is connected.
+ *
+ * Returns true if device is connected.
+ */
+bool SSD1306_IsDisplayAttached( int I2CAddress );
+
+/*
  * Attaches a display to the I2C bus using default communication functions.
  * 
  * Params:
