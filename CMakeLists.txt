@@ -16,6 +16,7 @@ idf_component_register(
   "fonts/font_liberation_mono_9x15.c"
   "fonts/font_tarable7seg_16x32.c"
   "fonts/font_tarable7seg_32x64.c"
+  "fonts/font_tiny_6x8.c"
 
   INCLUDE_DIRS "."
 )
