@@ -146,7 +146,8 @@ void SSD1306_WriteRawData( struct SSD1306_Device* DeviceHandle, uint8_t* Data, s
     DataLength = DataLength > DeviceHandle->FramebufferSize ? DeviceHandle->FramebufferSize : DataLength;
 
     if ( DataLength > 0 ) {
-        SSD1306_WriteData( DeviceHandle, Data, DataLength );
+        memcpy(DeviceHandle->Framebuffer, Data, DataLength);
+        SSD1306_WriteData( DeviceHandle, DeviceHandle->Framebuffer, DataLength );
     }
 }
 
@@ -208,7 +209,7 @@ static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int He
     SSD1306_HWReset( DeviceHandle );
     
     /* Init sequence according to SSD1306.pdf */
-    SSD1306_SetMuxRatio( DeviceHandle, 0x3F );
+    SSD1306_SetMuxRatio( DeviceHandle, Height - 1 );
     SSD1306_SetDisplayOffset( DeviceHandle, 0x00 );
     SSD1306_SetDisplayStartLine( DeviceHandle, 0 );
     SSD1306_SetHFlip( DeviceHandle, false );
@@ -224,7 +225,7 @@ static bool SSD1306_Init( struct SSD1306_Device* DeviceHandle, int Width, int He
     SSD1306_DisableDisplayRAM( DeviceHandle );
     SSD1306_SetInverted( DeviceHandle, false );
     SSD1306_SetDisplayClocks( DeviceHandle, 0, 8 );
-    EnableChargePumpRegulator( DeviceHandle );
+    // EnableChargePumpRegulator( DeviceHandle );
     SSD1306_SetDisplayAddressMode( DeviceHandle, AddressMode_Horizontal );
     SSD1306_SetColumnAddress( DeviceHandle, 0, DeviceHandle->Width - 1 );
     SSD1306_SetPageAddress( DeviceHandle, 0, ( DeviceHandle->Height / 8 ) - 1 );
